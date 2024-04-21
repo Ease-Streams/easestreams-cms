@@ -4,9 +4,15 @@ export const Users: CollectionConfig = {
   slug: 'users',
   auth: true,
   admin: {
-    useAsTitle: 'email',
+    useAsTitle: 'name',
   },
   fields: [
+    {
+      type: 'text', // Field type (text for name)
+      name: 'name', // Field name
+      label: 'User Name', // Label displayed in the admin UI
+      required: true, // Make the field mandatory
+    },
     {
       name: 'role',
       type: 'select',

@@ -4,5 +4,8 @@ import City from './City'
 import Customers from './Customers'
 import Users from './Users'
 import State from './State'
+import ParentCategory from './ParentCategory'
+import RootCategory from './RootCategory'
+import Products from './Products'
 
-export { Pages, Country, Customers, State, City, Users }
+export { Pages, Country, Customers, State, City, Users,ParentCategory ,RootCategory,Products}

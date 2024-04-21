@@ -14,6 +14,9 @@ export interface Config {
     customers: Customer;
     state: State;
     city: City;
+    rootcategory: Rootcategory;
+    parentcategory: Parentcategory;
+    products: Product;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -25,6 +28,7 @@ export interface Config {
  */
 export interface User {
   id: number;
+  name: string;
   role: 'admin' | 'user';
   updatedAt: string;
   createdAt: string;
@@ -129,6 +133,64 @@ export interface City {
   createdBy?: (number | null) | User;
   modifiedBy?: (number | null) | User;
   isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rootcategory".
+ */
+export interface Rootcategory {
+  id: number;
+  name: string;
+  description: string;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isDeleted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parentcategory".
+ */
+export interface Parentcategory {
+  id: number;
+  name: string;
+  description: string;
+  rootCategoryRef?: (number | null) | Rootcategory;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isDeleted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  name: string;
+  productCode: string;
+  description: string;
+  productimage: number | Product;
+  videourl?: string | null;
+  specification?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  rootcategoryref?: (number | null) | Rootcategory;
+  cityref?: (number | null) | City;
+  parentcategoryref?: (number | null) | Parentcategory;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isDeleted?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
