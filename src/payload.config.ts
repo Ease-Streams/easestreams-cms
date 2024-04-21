@@ -9,12 +9,12 @@ dotenv.config({
 })
 
 import { buildConfig } from 'payload/config'
-import { Pages, Country, Customers, State, City, Users,RootCategory,ParentCategory,Products } from './collections/Index'
+import { Pages, Country, Customers, State, City, Users,RootCategory,ParentCategory,Products,Media } from './collections/Index'
 import BeforeLogin from './components/BeforeLogin'
 
 export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
-  collections: [Users, Pages, Country, Customers, State, City,RootCategory,ParentCategory,Products],
+  collections: [Users, Pages, Country, Customers, State, City,RootCategory,ParentCategory,Products,Media],
   admin: {
     bundler: webpackBundler(),
     components: {

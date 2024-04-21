@@ -7,5 +7,6 @@ import State from './State'
 import ParentCategory from './ParentCategory'
 import RootCategory from './RootCategory'
 import Products from './Products'
+import Media from './Media'
 
-export { Pages, Country, Customers, State, City, Users,ParentCategory ,RootCategory,Products}
+export { Pages, Country, Customers, State, City, Users,ParentCategory ,RootCategory,Products,Media}
