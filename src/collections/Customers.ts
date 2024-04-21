@@ -15,42 +15,11 @@ export const Customers: CollectionConfig = {
   fields: [
     {
       type: 'text', // Field type (text for username)
-      name: 'username', // Field name
-      label: 'Name', // Label displayed in the admin UI
+      name: 'fullName', // Field name
+      label: 'Full Name', // Label displayed in the admin UI
       required: true, // Make the field mandatory
     },
-    {
-      type: 'email', // Field type for email
-      name: 'email',
-      label: 'Email',
-      required: true,
-      unique: true, // Ensure email is unique for each user
-    },
-    {
-      type: 'text', // Field type for password
-      hidden: true, //
-      name: 'password',
-      label: 'Password',
-      required: true,
-    },
-    {
-      name: 'isVerifiedSupplier',
-      type: 'checkbox', // Field type for password
-      label: 'Is Verified',
-      defaultValue: false,
-    },
-    {
-      name: 'isEmailVerified',
-      type: 'checkbox', // Field type for password
-      label: 'Is Email Verified',
-      defaultValue: false,
-    },
-    {
-      name: 'isActive',
-      type: 'checkbox', // Field type for password
-      label: 'Is Active',
-      defaultValue: false,
-    },
+
     {
       name: 'location',
       type: 'textarea',
@@ -63,6 +32,7 @@ export const Customers: CollectionConfig = {
       label: 'Contact',
       maxLength: 20,
     },
+
     {
       name: 'role', // required
       type: 'select', // required
@@ -86,6 +56,27 @@ export const Customers: CollectionConfig = {
           value: 'user',
         },
       ],
+    },
+    {
+      name: 'isEmailVerified',
+      type: 'checkbox', // Field type for password
+      label: 'Is Supplier Verified',
+      defaultValue: false,
+      admin: {
+        condition: (data, siblingData, { user }) => {
+          if (data.role == 'service_provider' || data.role == 'Service Provider') {
+            return true
+          } else {
+            return false
+          }
+        },
+      },
+    },
+    {
+      name: 'isActive',
+      type: 'checkbox', // Field type for password
+      label: 'Is Active',
+      defaultValue: true,
     },
   ],
 }

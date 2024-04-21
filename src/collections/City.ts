@@ -1,4 +1,6 @@
 import type { CollectionConfig } from 'payload/types'
+import { CustomCountryField } from '../components/fields/customerCountrySelect/field'
+import { CustomCountryComponent } from '../components/fields/customerCountrySelect/component'
 
 const fetchStateData = async (value: number, cookie: any) => {
   const response = await fetch(`http://localhost:3000/api/state/${value}`, {
@@ -36,11 +38,22 @@ export const City: CollectionConfig = {
       required: true, // Make the field mandatory
     },
     {
-      type: 'relationship', // Field type for relationships
       name: 'countryId',
-      label: 'Country', // Label displayed in the admin UI
+      type: 'relationship',
+      label: 'Country',
       relationTo: 'country',
+      admin: {
+        components: {
+          Field: CustomCountryComponent,
+        },
+      },
     },
+    // {
+    //   type: 'relationship', // Field type for relationships
+    //   name: 'countryId',
+    //   label: 'Country', // Label displayed in the admin UI
+    //   relationTo: 'country',
+    // },
     {
       type: 'relationship', // Field type for relationships
       name: 'createdBy',
@@ -89,15 +102,16 @@ export const City: CollectionConfig = {
   ],
 
   hooks: {
-    beforeValidate: [
-      async ({ context, data, req }) => {
-        context.stateData = await fetchStateData(data.stateId, req.headers.cookie)
-        return {
-          ...data,
-          countryId: context.stateData['countryId']['id'],
-        }
-      },
-    ],
+    // beforeValidate: [
+    //   async ({ context, data, req }) => {
+    //     console.log(context)
+    //     context.stateData = await fetchStateData(data.stateId, req.headers.cookie)
+    //     return {
+    //       ...data,
+    //       countryId: context.stateData['countryId']['id'],
+    //     }
+    //   },
+    // ],
   },
 }
 
