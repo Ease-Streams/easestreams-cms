@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload/types'
+import { CustomRootCategoryComponent } from '../components/fields/rootCategorySelect/component'
 
 export const Products: CollectionConfig = {
     slug: 'products', // Collection slug (used for API endpoints)
@@ -29,9 +30,9 @@ export const Products: CollectionConfig = {
             type: 'upload', // required
             relationTo: 'media', // required
             required: true,
-            admin:{
-                
-            }       
+            admin: {
+
+            }
         },
         {
             type: 'text', // Field type (text for name)
@@ -48,11 +49,20 @@ export const Products: CollectionConfig = {
         },
         {
             type: 'relationship', // Field type for relationships
+            name: 'parentcategoryref',
+            label: 'Parent Category', // Label displayed in the admin UI
+            relationTo: 'parentcategory',
+        },
+        {
+            type: 'relationship', // Field type for relationships
             name: 'rootcategoryref',
             label: 'Root Category', // Label displayed in the admin UI
             relationTo: 'rootcategory',
             admin: {
                 allowCreate: false,
+                components: {
+                    Field: CustomRootCategoryComponent,
+                },
             },
             access: {
                 update: () => false,
@@ -64,12 +74,7 @@ export const Products: CollectionConfig = {
             label: 'City', // Label displayed in the admin UI
             relationTo: 'city',
         },
-        {
-            type: 'relationship', // Field type for relationships
-            name: 'parentcategoryref',
-            label: 'Parent Category', // Label displayed in the admin UI
-            relationTo: 'parentcategory',
-        },
+
         {
             type: 'relationship', // Field type for relationships
             name: 'createdBy',

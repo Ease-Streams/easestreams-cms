@@ -17,6 +17,7 @@ const fetchStateData = async (value: number, cookie: any) => {
   }
 }
 
+
 export const City: CollectionConfig = {
   slug: 'city', // Collection slug (used for API endpoints)
   admin: {

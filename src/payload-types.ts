@@ -8,20 +8,37 @@
 
 export interface Config {
   collections: {
-    users: User;
-    pages: Page;
     country: Country;
-    customers: Customer;
     state: State;
     city: City;
+    customers: Customer;
+    users: User;
+    pages: Page;
+    media: Media;
     rootcategory: Rootcategory;
     parentcategory: Parentcategory;
     products: Product;
-    media: Media;
+    plans: Plan;
+    subscriptions: Subscription;
+    companies: Company;
+    enquiries: Enquiry;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
   globals: {};
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "country".
+ */
+export interface Country {
+  id: number;
+  name: string;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -38,6 +55,60 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "state".
+ */
+export interface State {
+  id: number;
+  name: string;
+  countryId?: (number | null) | Country;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "city".
+ */
+export interface City {
+  id: number;
+  name: string;
+  stateId: number | State;
+  countryId?: (number | null) | Country;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers".
+ */
+export interface Customer {
+  id: number;
+  fullName: string;
+  location?: string | null;
+  contact?: string | null;
+  role?: ('admin' | 'service_provider' | 'user') | null;
+  isEmailVerified?: boolean | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password: string | null;
@@ -71,71 +142,45 @@ export interface Page {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "country".
+ * via the `definition` "media".
  */
-export interface Country {
+export interface Media {
   id: number;
-  name: string;
-  createdBy?: (number | null) | User;
-  modifiedBy?: (number | null) | User;
-  isActive?: boolean | null;
+  alt?: string | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "customers".
- */
-export interface Customer {
-  id: number;
-  username: string;
-  password: string | null;
-  isVerifiedSupplier?: boolean | null;
-  isEmailVerified?: boolean | null;
-  isActive?: boolean | null;
-  location?: string | null;
-  contact?: string | null;
-  role?: ('admin' | 'service_provider' | 'user') | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  _verified?: boolean | null;
-  _verificationToken?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "state".
- */
-export interface State {
-  id: number;
-  name: string;
-  countryId?: (number | null) | Country;
-  createdBy?: (number | null) | User;
-  modifiedBy?: (number | null) | User;
-  isActive?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "city".
- */
-export interface City {
-  id: number;
-  name: string;
-  stateId: number | State;
-  countryId?: (number | null) | Country;
-  createdBy?: (number | null) | User;
-  modifiedBy?: (number | null) | User;
-  isActive?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
+  url?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    tablet?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -186,9 +231,9 @@ export interface Product {
     | number
     | boolean
     | null;
+  parentcategoryref?: (number | null) | Parentcategory;
   rootcategoryref?: (number | null) | Rootcategory;
   cityref?: (number | null) | City;
-  parentcategoryref?: (number | null) | Parentcategory;
   createdBy?: (number | null) | User;
   modifiedBy?: (number | null) | User;
   isDeleted?: boolean | null;
@@ -197,45 +242,93 @@ export interface Product {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "plans".
  */
-export interface Media {
+export interface Plan {
   id: number;
-  alt?: string | null;
+  name: string;
+  description: string;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isActive?: boolean | null;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  sizes?: {
-    thumbnail?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    card?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-    tablet?: {
-      url?: string | null;
-      width?: number | null;
-      height?: number | null;
-      mimeType?: string | null;
-      filesize?: number | null;
-      filename?: string | null;
-    };
-  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions".
+ */
+export interface Subscription {
+  id: number;
+  name: string;
+  description: string;
+  amount?: number | null;
+  freeEntries?: number | null;
+  plansref?: (number | null) | Plan;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companies".
+ */
+export interface Company {
+  id: number;
+  name: string;
+  logo: number | Media;
+  mobile: string;
+  email: string;
+  isEmailVerified?: boolean | null;
+  address: string;
+  additionalinfo?:
+    | {
+        key?: string | null;
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  branches?:
+    | {
+        branchName: string;
+        contactNo?: string | null;
+        contactPersonName?: string | null;
+        contactEmail?: string | null;
+        location?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  stateId: number | State;
+  countryId?: (number | null) | Country;
+  mapUrl?: string | null;
+  subscriptionRef?: (number | null) | Subscription;
+  amount?: number | null;
+  freeEntries?: number | null;
+  whatsappno?: string | null;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries".
+ */
+export interface Enquiry {
+  id: number;
+  userRef?: (number | null) | User;
+  enquiryMessgae: string;
+  enquiryType: 'job' | 'test1';
+  productRef?: (number | null) | Product;
+  companyRef?: (number | null) | Company;
+  enquiryStatus: string;
+  modifiedBy?: (number | null) | User;
+  isDeleted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -245,12 +338,12 @@ export interface PayloadPreference {
   id: number;
   user:
     | {
-        relationTo: 'users';
-        value: number | User;
-      }
-    | {
         relationTo: 'customers';
         value: number | Customer;
+      }
+    | {
+        relationTo: 'users';
+        value: number | User;
       };
   key?: string | null;
   value?:
