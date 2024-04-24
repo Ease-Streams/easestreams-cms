@@ -11,7 +11,8 @@ export const State: CollectionConfig = {
       name: 'name', // Field name
       label: 'Name', // Label displayed in the admin UI
       required: true, // Make the field mandatory
-    },
+      maxLength: 150
+     },
     {
       type: 'relationship', // Field type for relationships
       name: 'countryId',

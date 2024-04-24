@@ -11,11 +11,13 @@ export const RootCategory: CollectionConfig = {
       name: 'name', // Field name
       label: 'Category Name', // Label displayed in the admin UI
       required: true, // Make the field mandatory
+      maxLength: 200
     },
     {
       type: 'textarea', // Field type (text for name)
       name: 'description', // Field name
-      maxLength: 200, label: 'Description', // Label displayed in the admin UI
+      maxLength: 300,
+      label: 'Description', // Label displayed in the admin UI
       required: true, // Make the field mandatory
     },
     {

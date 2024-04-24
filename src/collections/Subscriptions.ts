@@ -28,13 +28,13 @@ export const Subscriptions: CollectionConfig = {
             name: 'name',
             label: 'Name',
             required: true,
-        },
+            maxLength: 200  },
         {
             type: 'textarea',
             name: 'description',
             label: 'Description',
             required: true,
-        },
+            maxLength: 300     },
         {
             type: 'number',
             name: 'amount',

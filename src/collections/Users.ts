@@ -14,6 +14,7 @@ export const Users: CollectionConfig = {
       name: 'name', // Field name
       label: 'User Name', // Label displayed in the admin UI
       required: true, // Make the field mandatory
+      maxLength: 100
     },
     {
       name: 'role',

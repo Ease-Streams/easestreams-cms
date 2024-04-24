@@ -10,14 +10,14 @@ export const Customers: CollectionConfig = {
     verify: true, // Require email verification before being allowed to authenticate
     maxLoginAttempts: 5, // Automatically lock a user out after X amount of failed logins
     lockTime: 600 * 1000, // Time period to allow the max login attempts
-    // More options are available
   },
   fields: [
     {
-      type: 'text', // Field type (text for username)
-      name: 'fullName', // Field name
-      label: 'Full Name', // Label displayed in the admin UI
-      required: true, // Make the field mandatory
+      type: 'text', 
+      name: 'fullName', 
+      label: 'Full Name',
+      required: true, 
+      maxLength: 150
     },
 
     {
@@ -32,7 +32,6 @@ export const Customers: CollectionConfig = {
       label: 'Contact',
       maxLength: 20,
     },
-
     {
       name: 'role', // required
       type: 'select', // required
@@ -59,7 +58,7 @@ export const Customers: CollectionConfig = {
     },
     {
       name: 'isEmailVerified',
-      type: 'checkbox', // Field type for password
+      type: 'checkbox',
       label: 'Is Supplier Verified',
       defaultValue: false,
       admin: {
@@ -74,7 +73,7 @@ export const Customers: CollectionConfig = {
     },
     {
       name: 'isActive',
-      type: 'checkbox', // Field type for password
+      type: 'checkbox', 
       label: 'Is Active',
       defaultValue: true,
     },

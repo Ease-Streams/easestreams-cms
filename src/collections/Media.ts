@@ -33,6 +33,7 @@ export const Media: CollectionConfig = {
         {
             name: 'alt',
             type: 'text',
+            maxLength: 200
         },
     ],
 }

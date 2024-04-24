@@ -1,5 +1,14 @@
 import type { CollectionConfig } from 'payload/types'
 import { CustomRootCategoryComponent } from '../components/fields/rootCategorySelect/component'
+const generateRandomProductCode = () => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let productCode = '';
+  for (let i = 0; i < 8; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    productCode += characters.charAt(randomIndex);
+  }
+  return productCode;
+}
 
 export const Products: CollectionConfig = {
   slug: 'products', // Collection slug (used for API endpoints)
@@ -12,12 +21,15 @@ export const Products: CollectionConfig = {
       name: 'name', // Field name
       label: 'Name', // Label displayed in the admin UI
       required: true, // Make the field mandatory
+      maxLength: 250
     },
     {
       type: 'text', // Field type (text for name)
       name: 'productCode', // Field name
       label: 'Product Code', // Label displayed in the admin UI
       required: true, // Make the field mandatory
+      maxLength: 100,
+      defaultValue: generateRandomProductCode()
     },
     {
       type: 'textarea', // Field type (text for name)
@@ -40,6 +52,12 @@ export const Products: CollectionConfig = {
           required: true, // Ensure each item has a valid media relation
         },
       ],
+    },
+    {
+      type: 'relationship', // Field type for relationships
+      name: 'cityref',
+      label: 'City', // Label displayed in the admin UI
+      relationTo: 'city',
     },
     {
       type: 'array', // Field type (text for name)
@@ -75,6 +93,12 @@ export const Products: CollectionConfig = {
     },
     {
       type: 'relationship', // Field type for relationships
+      name: 'parentcategoryref',
+      label: 'Parent Category', // Label displayed in the admin UI
+      relationTo: 'parentcategory',
+    },
+    {
+      type: 'relationship', // Field type for relationships
       name: 'rootcategoryref',
       label: 'Root Category', // Label displayed in the admin UI
       relationTo: 'rootcategory',
@@ -88,18 +112,7 @@ export const Products: CollectionConfig = {
         update: () => false,
       },
     },
-    {
-      type: 'relationship', // Field type for relationships
-      name: 'cityref',
-      label: 'City', // Label displayed in the admin UI
-      relationTo: 'city',
-    },
-    {
-      type: 'relationship', // Field type for relationships
-      name: 'parentcategoryref',
-      label: 'Parent Category', // Label displayed in the admin UI
-      relationTo: 'parentcategory',
-    },
+
     {
       type: 'relationship', // Field type for relationships
       name: 'createdBy',

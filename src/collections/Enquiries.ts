@@ -73,7 +73,7 @@ export const Enquiries: CollectionConfig = {
             name: 'modifiedBy',
             label: 'Modified By',
             relationTo: 'users',
-            // defaultValue: ({ user }) => user.id,
+            defaultValue: ({ user }) => user.id,
             admin: {
                 allowCreate: false,
             },

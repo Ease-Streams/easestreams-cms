@@ -21,7 +21,7 @@ export const Plans: CollectionConfig = {
             maxLength: 300
         },
         {
-            type: 'relationship', // Field type for relationships
+            type: 'relationship', 
             name: 'createdBy',
             label: 'Created By',
             relationTo: 'users',
@@ -34,11 +34,11 @@ export const Plans: CollectionConfig = {
             },
         },
         {
-            type: 'relationship', // Field type for relationships
+            type: 'relationship', 
             name: 'modifiedBy',
             label: 'Modified By',
             relationTo: 'users',
-            // defaultValue: ({ user }) => user.id,
+            defaultValue: ({ user }) => user.id,
             admin: {
                 allowCreate: false,
             },
@@ -61,7 +61,7 @@ export const Plans: CollectionConfig = {
         {
             name: 'isActive',
             label: 'Active',
-            type: 'checkbox', // Field type for email
+            type: 'checkbox', 
             defaultValue: true,
         },
     ],

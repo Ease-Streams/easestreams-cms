@@ -7,22 +7,23 @@ export const ParentCategory: CollectionConfig = {
   },
   fields: [
     {
-      type: 'text', // Field type (text for name)
-      name: 'name', // Field name
-      label: 'Category Name', // Label displayed in the admin UI
-      required: true, // Make the field mandatory
+      type: 'text', 
+      name: 'name', 
+      label: 'Category Name', 
+      required: true, 
+      maxLength: 200
     },
     {
-      type: 'textarea', // Field type (text for name)
-      name: 'description', // Field name
-      label: 'Description', // Label displayed in the admin UI
-      maxLength: 200,
-      required: true, // Make the field mandatory
+      type: 'textarea', 
+      name: 'description', 
+      label: 'Description', 
+      maxLength: 300,
+      required: true, 
     },
     {
-      type: 'relationship', // Field type for relationships
+      type: 'relationship', 
       name: 'rootCategoryRef',
-      label: 'Root Category', // Label displayed in the admin UI
+      label: 'Root Category', 
       relationTo: 'rootcategory',
       admin: {
         allowCreate: false,
@@ -32,9 +33,9 @@ export const ParentCategory: CollectionConfig = {
       },
     },
     {
-      type: 'relationship', // Field type for relationships
+      type: 'relationship', 
       name: 'createdBy',
-      label: 'Created By', // Label displayed in the admin UI
+      label: 'Created By', 
       relationTo: 'users',
       admin: {
         allowCreate: false,
@@ -45,9 +46,9 @@ export const ParentCategory: CollectionConfig = {
       },
     },
     {
-      type: 'relationship', // Field type for relationships
+      type: 'relationship', 
       name: 'modifiedBy',
-      label: 'Modified By', // Label displayed in the admin UI
+      label: 'Modified By', 
       relationTo: 'users',
       defaultValue: ({ user }) => user.id,
       admin: {

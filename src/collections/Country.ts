@@ -15,18 +15,19 @@ export const Country: CollectionConfig = {
   },
   fields: [
     {
-      type: 'text', // Field type (text for username)
-      name: 'name', // Field name
-      label: 'Name', // Label displayed in the admin UI
-      required: true, // Make the field mandatory
+      type: 'text', 
+      name: 'name', 
+      label: 'Name', 
+      required: true, 
+      maxLength: 100
     },
 
     {
-      type: 'relationship', // Field type for relationships
+      type: 'relationship', 
       name: 'createdBy',
-      label: 'Created By', // Label displayed in the admin UI
+      label: 'Created By', 
       relationTo: 'users',
-      // defaultValue: ({ user }) => user.id,
+      defaultValue: ({ user }) => user.id,
       admin: {
         allowCreate: false,
       },
@@ -35,11 +36,11 @@ export const Country: CollectionConfig = {
       },
     },
     {
-      type: 'relationship', // Field type for relationships
+      type: 'relationship', 
       name: 'modifiedBy',
-      label: 'Modified By', // Label displayed in the admin UI
+      label: 'Modified By', 
       relationTo: 'users',
-      // defaultValue: ({ user }) => user.id,
+      defaultValue: ({ user }) => user.id,
       admin: {
         allowCreate: false,
       },
@@ -51,7 +52,6 @@ export const Country: CollectionConfig = {
         afterChange: [
           async ({ operation, req, data }) => {
             if (operation === 'update') {
-              // Your custom logic here
               data.modifiedBy = req.user.id
               return data
             }
@@ -62,7 +62,7 @@ export const Country: CollectionConfig = {
     {
       name: 'isActive',
       label: 'Active',
-      type: 'checkbox', // Field type for email
+      type: 'checkbox',
       defaultValue: true,
     },
   ],

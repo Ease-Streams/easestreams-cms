@@ -27,6 +27,7 @@ export const Companies: CollectionConfig = {
             type: 'text',
             name: 'name',
             label: 'Name',
+            maxLength: 150,
             required: true,
         },
         {
@@ -108,14 +109,14 @@ export const Companies: CollectionConfig = {
             name: 'mapUrl',
             label: 'Map URL',
             required: false,
-            maxLength: 16
+            maxLength: 600
         },
         {
             type: 'relationship',
             name: 'subscriptionRef',
             label: 'Subscription',
             relationTo: 'subscriptions',
-            required: false, 
+            required: false,
         },
         {
             type: 'number',
@@ -138,6 +139,7 @@ export const Companies: CollectionConfig = {
             name: 'whatsappno',
             label: 'Whatsapp No',
             required: false,
+            maxLength: 20
         },
         {
             type: 'relationship',
