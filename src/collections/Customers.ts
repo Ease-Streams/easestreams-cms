@@ -3,7 +3,7 @@ import type { CollectionConfig } from 'payload/types'
 export const Customers: CollectionConfig = {
   slug: 'customers', // Collection slug (used for API endpoints)
   admin: {
-    useAsTitle: 'username',
+    useAsTitle: 'title',
   },
   auth: {
     tokenExpiration: 7200, // How many seconds to keep the user logged in
@@ -15,8 +15,8 @@ export const Customers: CollectionConfig = {
   fields: [
     {
       type: 'text', // Field type (text for username)
-      name: 'username', // Field name
-      label: 'Name', // Label displayed in the admin UI
+      name: 'title', // Field name
+      label: 'Full Name', // Label displayed in the admin UI
       required: true, // Make the field mandatory
     },
     {

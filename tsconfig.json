@@ -27,7 +27,8 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "src/utilities/*.js"
   ],
   "exclude": [
     "node_modules"

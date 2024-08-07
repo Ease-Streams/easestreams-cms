@@ -1,33 +1,20 @@
-import React, { forwardRef, Ref } from 'react'
+import React, { FC,forwardRef, Ref } from 'react'
 
-import classes from './index.module.scss'
-
-type Props = {
+interface Props {
   left?: boolean
   right?: boolean
   className?: string
-  children: React.ReactNode
-  ref?: Ref<HTMLDivElement>
+  children?: React.ReactNode
 }
 
-export const Gutter: React.FC<Props> = forwardRef<HTMLDivElement, Props>((props, ref) => {
+export const Gutter: FC<Props> = forwardRef<HTMLDivElement, Props>((props, ref) => {
   const { left = true, right = true, className, children } = props
 
   return (
-    <div
-      ref={ref}
-      className={[
-        left && classes.gutterLeft,
-        right && classes.gutterRight,
-        className,
-        classes.gutter,
-      ]
-        .filter(Boolean)
-        .join(' ')}
-    >
-      {children}
+    <div ref={ref as Ref<HTMLDivElement>} className={className}>
+      {left && <div className="left-gutter"></div>}
+      <div className="content">{children}</div>
+      {right && <div className="right-gutter"></div>}
     </div>
   )
 })
-
-Gutter.displayName = 'Gutter'

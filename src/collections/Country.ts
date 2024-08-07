@@ -1,22 +1,17 @@
-import type { CollectionConfig, CollectionBeforeChangeHook } from 'payload/types'
-const beforeChangeHook: CollectionBeforeChangeHook = async ({
-  data, // incoming data to update or create with
-  req, // full express request
-  operation, // name of the operation ie. 'create', 'update'
-  originalDoc, // original document
-}) => {
-  data.modifiedBy = 5
-  return data // Return data to either create or update a document with
-}
+import type { CollectionConfig } from 'payload/types'
+
 export const Country: CollectionConfig = {
   slug: 'country', // Collection slug (used for API endpoints)
   admin: {
-    useAsTitle: 'name',
+    useAsTitle: 'title',
+  },
+  access: {
+    read: () => true,
   },
   fields: [
     {
       type: 'text', // Field type (text for username)
-      name: 'name', // Field name
+      name: 'title', // Field name
       label: 'Name', // Label displayed in the admin UI
       required: true, // Make the field mandatory
     },
@@ -26,12 +21,9 @@ export const Country: CollectionConfig = {
       name: 'createdBy',
       label: 'Created By', // Label displayed in the admin UI
       relationTo: 'users',
-      // defaultValue: ({ user }) => user.id,
-      admin: {
-        allowCreate: false,
-      },
+      defaultValue: ({ user }) => user.id,
       access: {
-        update: () => false,
+        read: () => false,
       },
     },
     {
@@ -39,13 +31,9 @@ export const Country: CollectionConfig = {
       name: 'modifiedBy',
       label: 'Modified By', // Label displayed in the admin UI
       relationTo: 'users',
-      // defaultValue: ({ user }) => user.id,
-      admin: {
-        allowCreate: false,
-      },
+      defaultValue: ({ user }) => user.id,
       access: {
-        update: () => false,
-        create: () => false,
+        read: () => false,
       },
       hooks: {
         afterChange: [

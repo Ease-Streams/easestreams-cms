@@ -4,8 +4,6 @@ import type { Payload } from 'payload'
 import payload from 'payload'
 import type { InitOptions } from 'payload/config'
 
-import { seed as seedData } from './seed'
-
 dotenv.config({
   path: path.resolve(__dirname, '../.env'),
 })
@@ -42,9 +40,9 @@ export const getPayloadClient = async ({ initOptions, seed }: Args = {}): Promis
     process.env.PAYLOAD_DROP_DATABASE = seed ? 'true' : 'false'
     cached.client = await cached.promise
 
-    if (seed) {
-      await seedData(payload)
-    }
+    // if (seed) {
+    //   await seedData(payload)
+    // }
   } catch (e: unknown) {
     cached.promise = null
     throw e

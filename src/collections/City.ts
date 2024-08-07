@@ -1,89 +1,86 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from "payload/types";
 
-const fetchStateData = async (value: number, cookie: any) => {
+const fetchStateData: any = async (value: number, cookie: any) => {
   const response = await fetch(`http://localhost:3000/api/state/${value}`, {
-    method: 'GET',
+    method: "GET",
     headers: {
-      'content-type': 'application/json',
+      "content-type": "application/json",
       Cookie: cookie,
     },
-  })
+  });
   if (response.ok) {
-    return response.json()
+    return response.json();
   } else {
-    return false
+    return false;
   }
-}
+};
 
 export const City: CollectionConfig = {
-  slug: 'city', // Collection slug (used for API endpoints)
+  slug: "city", // Collection slug (used for API endpoints)
   admin: {
-    useAsTitle: 'name',
+    useAsTitle: "title",
+  },
+  access: {
+    read: () => true,
   },
 
   fields: [
     {
-      type: 'text', // Field type (text for username)
-      name: 'name', // Field name
-      label: 'Name', // Label displayed in the admin UI
+      type: "text", // Field type (text for username)
+      name: "title", // Field name
+      label: "Name", // Label displayed in the admin UI
       required: true, // Make the field mandatory
     },
     {
-      type: 'relationship', // Field type for relationships
-      name: 'stateId',
-      label: 'State', // Label displayed in the admin UI
-      relationTo: 'state',
+      type: "relationship", // Field type for relationships
+      name: "stateRef",
+      label: "State", // Label displayed in the admin UI
+      relationTo: "state",
       required: true, // Make the field mandatory
     },
     {
-      type: 'relationship', // Field type for relationships
-      name: 'countryId',
-      label: 'Country', // Label displayed in the admin UI
-      relationTo: 'country',
+      name: "countryRef",
+      type: "relationship",
+      label: "Country",
+      relationTo: "country",
     },
     {
-      type: 'relationship', // Field type for relationships
-      name: 'createdBy',
-      label: 'Created By', // Label displayed in the admin UI
-      relationTo: 'users',
+      type: "relationship", // Field type for relationships
+      name: "createdBy",
+      label: "Created By", // Label displayed in the admin UI
+      relationTo: "users",
       defaultValue: ({ user }) => user.id,
-      admin: {
-        allowCreate: false,
-      },
       access: {
         update: () => false,
-        create: () => false,
+        read: () => false,
       },
     },
     {
-      type: 'relationship', // Field type for relationships
-      name: 'modifiedBy',
-      label: 'Modified By', // Label displayed in the admin UI
-      relationTo: 'users',
+      type: "relationship", // Field type for relationships
+      name: "modifiedBy",
+      label: "Modified By", // Label displayed in the admin UI
+      relationTo: "users",
       defaultValue: ({ user }) => user.id,
-      admin: {
-        allowCreate: false,
-      },
       access: {
         update: () => false,
-        create: () => false,
+        read: () => false,
       },
       hooks: {
         afterChange: [
           async ({ operation, req, data }) => {
-            if (operation === 'update') {
+            if (operation === "update") {
               // Your custom logic here
-              data.modifiedBy = req.user.id
-              return data
+              data.modifiedBy = req.user.id;
+              return data;
             }
           },
         ],
       },
     },
     {
-      name: 'isActive',
-      label: 'Active',
-      type: 'checkbox', // Field type for email
+      name: "isActive",
+      label: "Active",
+      type: "checkbox", // Field type for email
       defaultValue: true,
     },
   ],
@@ -91,14 +88,17 @@ export const City: CollectionConfig = {
   hooks: {
     beforeValidate: [
       async ({ context, data, req }) => {
-        context.stateData = await fetchStateData(data.stateId, req.headers.cookie)
+        context.stateData = await fetchStateData(
+          data.stateId,
+          req.headers.cookie
+        );
         return {
           ...data,
-          countryId: context.stateData['countryId']['id'],
-        }
+          countryId: context.stateData["countryId"]["id"],
+        };
       },
     ],
   },
-}
+};
 
-export default City
+export default City;
