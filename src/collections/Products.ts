@@ -260,8 +260,9 @@ export const Products: CollectionConfig = {
           data["modifiedBy"] = req.user.id;
           data["itemCode"] = await generateUniqueCode(6, req.headers.cookie);
           let category = await getCategoryData(data.parentcategoryref);
+          console.log(category, "category");
           data["slug"] = `/${normalizeSearchTerm(
-            category.rootCategoryRef.title
+            category?.rootCategoryRef?.title
           )}/${normalizeSearchTerm(category.title)}/${normalizeSearchTerm(
             data.title
           )}-${data["itemCode"]}`;
