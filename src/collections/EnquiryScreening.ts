@@ -3,12 +3,18 @@ import type { CollectionConfig } from 'payload'
 export const EnquiryScreening: CollectionConfig = {
   slug: 'enquiryScreening', // Collection slug (used for API endpoints)
   admin: {
-    useAsTitle: 'name',
+    useAsTitle: 'enquiry',
   },
   fields: [
     {
+      type: 'relationship', // Field type for relationships
+      name: 'enquiry',
+      label: 'Enquiry Id', // Label displayed in the admin UI
+      relationTo: 'enquiries',
+    },
+    {
       type: 'date', // Field type (text for username)
-      name: 'sreened_at', // Field name
+      name: 'sreened_on', // Field name
       label: 'Screened On', // Label displayed in the admin UI
       required: true, // Make the field mandatory
     },

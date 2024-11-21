@@ -86,6 +86,7 @@ export const Enquiries: CollectionConfig = {
           async ({ operation, req, data }) => {
             if (operation === 'update') {
               // Your custom logic here
+              // @ts-ignore
               data.modifiedBy = req.user?.id
               return data
             }

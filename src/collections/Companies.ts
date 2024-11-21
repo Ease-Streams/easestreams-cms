@@ -1,10 +1,7 @@
 import type { CollectionConfig } from 'payload'
-import { CustomCountryComponent } from '../components/fields/customerCountrySelect/component'
-import { HTMLConverterFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import seoFields from './fields/seoFields'
 import { normalizeSearchTerm } from '../utilities/helper'
 import { setCreatedBy, setModifiedBy } from '../utilities/hooks'
-import CustomRichText from '../components/fields/CustomRichText'
 
 export const Companies: CollectionConfig = {
   slug: 'companies', // Collection slug (used for API endpoints)

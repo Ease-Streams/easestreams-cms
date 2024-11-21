@@ -23,6 +23,7 @@ export interface Config {
     products: Product;
     plans: Plan;
     subscriptions: Subscription;
+    enquiryScreening: EnquiryScreening;
     companies: Company;
     enquiries: Enquiry;
     home: Home;
@@ -45,6 +46,7 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     plans: PlansSelect<false> | PlansSelect<true>;
     subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
+    enquiryScreening: EnquiryScreeningSelect<false> | EnquiryScreeningSelect<true>;
     companies: CompaniesSelect<false> | CompaniesSelect<true>;
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     home: HomeSelect<false> | HomeSelect<true>;
@@ -422,6 +424,23 @@ export interface Plan {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiryScreening".
+ */
+export interface EnquiryScreening {
+  id: number;
+  enquiry?: (number | null) | Enquiry;
+  sreened_on: string;
+  screeningAgent?: (number | null) | User;
+  sreeningTags: 'job' | 'promotion' | 'relevant';
+  remarks?: string | null;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "enquiries".
  */
 export interface Enquiry {
@@ -535,6 +554,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'subscriptions';
         value: number | Subscription;
+      } | null)
+    | ({
+        relationTo: 'enquiryScreening';
+        value: number | EnquiryScreening;
       } | null)
     | ({
         relationTo: 'companies';
@@ -815,6 +838,22 @@ export interface SubscriptionsSelect<T extends boolean = true> {
   amount?: T;
   freeEntries?: T;
   plansref?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiryScreening_select".
+ */
+export interface EnquiryScreeningSelect<T extends boolean = true> {
+  enquiry?: T;
+  sreened_on?: T;
+  screeningAgent?: T;
+  sreeningTags?: T;
+  remarks?: T;
   createdBy?: T;
   modifiedBy?: T;
   isActive?: T;

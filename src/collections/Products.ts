@@ -50,7 +50,7 @@ export const Products: CollectionConfig = {
       hooks: {
         beforeChange: [
           async ({ data, req, operation }) => {
-            if (operation === 'create' || operation === 'update') {
+            if (operation === 'create') {
               // @ts-ignore
               return (data.itemCode = await generateUniqueCode(6, req.headers.cookie))
             }

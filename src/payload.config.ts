@@ -24,6 +24,7 @@ import HomePage from './collections/Home'
 import SearchTags from './collections/SearchTags'
 import SeoElements from './globals/SeoElements'
 import HomeBanners from './globals/HomeBanners'
+import EnquiryScreening from './collections/EnquiryScreening'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -47,6 +48,7 @@ export default buildConfig({
     Products,
     Plans,
     Subscriptions,
+    EnquiryScreening,
     Companies,
     Enquiries,
     HomePage,
