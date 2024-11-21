@@ -1,5 +1,5 @@
 import { HTMLConverterFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
-import type { GlobalConfig } from 'payload/types'
+import type { GlobalConfig } from 'payload'
 
 export const SeoElements: GlobalConfig = {
   slug: 'seo_elements', // Collection slug (used for API endpoints)

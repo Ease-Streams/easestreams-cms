@@ -1,9 +1,8 @@
-import { CollectionConfig } from 'payload/types'
+import { CollectionConfig } from 'payload'
 
 export const EnquiryAttachments: CollectionConfig = {
   slug: 'enquiryAttachments',
   upload: {
-    staticURL: '/enquiryAttachments',
     staticDir: 'enquiryAttachments',
     adminThumbnail: ({ doc }) =>
       process.env.NEXT_PUBLIC_PAYLOAD_URL + `/enquiryAttachments/${doc.filename}`,

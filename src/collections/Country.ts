@@ -1,4 +1,6 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
+import { normalizeSearchTerm } from '../utilities/helper'
+import { setCreatedBy, setModifiedBy } from '../utilities/hooks'
 
 export const Country: CollectionConfig = {
   slug: 'country', // Collection slug (used for API endpoints)
@@ -14,35 +16,61 @@ export const Country: CollectionConfig = {
       name: 'title', // Field name
       label: 'Name', // Label displayed in the admin UI
       required: true, // Make the field mandatory
+      index: true,
     },
 
     {
-      type: 'relationship', // Field type for relationships
       name: 'createdBy',
-      label: 'Created By', // Label displayed in the admin UI
+      type: 'relationship',
       relationTo: 'users',
-      defaultValue: ({ user }) => user.id,
-      access: {
-        read: () => false,
+      label: 'Created By',
+      hooks: {
+        beforeChange: [setCreatedBy],
       },
+      access: {
+        read: ({ req: { user } }) => (user ? true : false),
+      },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      index: true, // Index createdBy for fast retrieval of user who created the category
     },
     {
-      type: 'relationship', // Field type for relationships
       name: 'modifiedBy',
-      label: 'Modified By', // Label displayed in the admin UI
+      type: 'relationship',
       relationTo: 'users',
-      defaultValue: ({ user }) => user.id,
-      access: {
-        read: () => false,
-      },
+      label: 'Modified By',
       hooks: {
-        afterChange: [
-          async ({ operation, req, data }) => {
-            if (operation === 'update') {
-              // Your custom logic here
-              data.modifiedBy = req.user.id
-              return data
+        beforeChange: [setModifiedBy],
+      },
+      access: {
+        read: ({ req: { user } }) => (user ? true : false),
+      },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      index: true, // Index modifiedBy for fast retrieval of user who modified the category
+    },
+    {
+      name: 'slug',
+      index: true, // Index URL for faster searches and ensure it's unique
+      label: 'Slug',
+      type: 'text',
+      hooks: {
+        beforeChange: [
+          async ({ data, req }) => {
+            // @ts-ignore
+            if (!data.slug) {
+              if (data?.title) {
+                data.slug = normalizeSearchTerm(data.title)
+              }
+            } else {
+              // @ts-ignore
+              data.slug = normalizeSearchTerm(data.slug)
             }
+            return data?.slug
           },
         ],
       },

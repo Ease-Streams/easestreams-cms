@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const EnquiryScreening: CollectionConfig = {
   slug: 'enquiryScreening', // Collection slug (used for API endpoints)
@@ -52,24 +52,13 @@ export const EnquiryScreening: CollectionConfig = {
       name: 'modifiedBy',
       label: 'Modified By', // Label displayed in the admin UI
       relationTo: 'users',
-      // defaultValue: ({ user }) => user.id,
+      // defaultValue: ({ user }) => user?.id,
       admin: {
         allowCreate: false,
       },
       access: {
         update: () => false,
         create: () => false,
-      },
-      hooks: {
-        afterChange: [
-          async ({ operation, req, data }) => {
-            if (operation === 'update') {
-              // Your custom logic here
-              data.modifiedBy = req.user.id
-              return data
-            }
-          },
-        ],
       },
     },
     {

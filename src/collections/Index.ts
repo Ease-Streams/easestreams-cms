@@ -3,8 +3,8 @@ import City from "./City";
 import Customers from "./Customers";
 import Users from "./Users";
 import State from "./State";
-import ParentCategory from "./ParentCategory";
-import RootCategory from "./RootCategory";
+import SubCategory from "./SubCategory";
+import Category from "./Category";
 import Products from "./Products";
 import Media from "./Media";
 import Companies from "./Companies";
@@ -25,8 +25,8 @@ export {
   State,
   City,
   Users,
-  ParentCategory,
-  RootCategory,
+  SubCategory,
+  Category,
   Products,
   Media,
   Companies,

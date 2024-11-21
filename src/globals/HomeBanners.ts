@@ -1,4 +1,4 @@
-import type { GlobalConfig } from 'payload/types'
+import type { GlobalConfig } from 'payload'
 
 export const HomeBanners: GlobalConfig = {
   slug: 'home_banner', // Collection slug (used for API endpoints)
@@ -18,7 +18,7 @@ export const HomeBanners: GlobalConfig = {
           required: false,
           fields: [
             {
-              type: 'relationship',
+              type: 'upload',
               name: 'image',
               label: 'Image',
               relationTo: 'media',

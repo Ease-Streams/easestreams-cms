@@ -1,6 +1,10 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 import { CustomCountryComponent } from '../components/fields/customerCountrySelect/component'
 import { HTMLConverterFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import seoFields from './fields/seoFields'
+import { normalizeSearchTerm } from '../utilities/helper'
+import { setCreatedBy, setModifiedBy } from '../utilities/hooks'
+import CustomRichText from '../components/fields/CustomRichText'
 
 export const Companies: CollectionConfig = {
   slug: 'companies', // Collection slug (used for API endpoints)
@@ -93,9 +97,18 @@ export const Companies: CollectionConfig = {
       label: 'Branches',
       required: false,
       fields: [
-        { type: 'text', name: 'branchName', label: 'Branch Name', required: true },
+        {
+          type: 'text',
+          name: 'branchName',
+          label: 'Branch Name',
+          required: true,
+        },
         { type: 'text', name: 'contactNo', label: 'Contact No' },
-        { type: 'text', name: 'contactPersonName', label: 'Contact Person Name' },
+        {
+          type: 'text',
+          name: 'contactPersonName',
+          label: 'Contact Person Name',
+        },
         { type: 'text', name: 'contactEmail', label: 'Contact Email' },
         { type: 'text', name: 'location', label: 'Location' },
       ],
@@ -112,11 +125,6 @@ export const Companies: CollectionConfig = {
       type: 'relationship',
       label: 'Country',
       relationTo: 'country',
-      admin: {
-        components: {
-          Field: CustomCountryComponent,
-        },
-      },
     },
     {
       type: 'text',
@@ -148,69 +156,70 @@ export const Companies: CollectionConfig = {
         step: 1,
       },
     },
-
     {
-      name: 'metaTitle',
-      type: 'text',
-      label: 'Meta Title',
+      type: 'textarea', // Field type (text for name)
+      name: 'description', // Field name
+      label: 'Description', // Label displayed in the admin UI
+      required: false, // Make the field mandatory
+      index: true,
+      admin: {
+        components: {
+          Field: 'src/components/fields/CustomRichText',
+        },
+      },
     },
     {
-      name: 'metaKeyword',
-      type: 'text',
-      label: 'Meta Keywords',
-    },
-    {
-      name: 'canonical',
-      type: 'text',
-      label: 'Canonical',
-    },
-    {
-      name: 'metaDescription',
-      type: 'text',
-      label: 'Meta Description',
-    },
-    {
-      name: 'pageContent',
-      type: 'richText',
-      editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [...defaultFeatures, HTMLConverterFeature({})],
-      }),
-    },
-    {
-      type: 'relationship',
       name: 'createdBy',
-      label: 'Created By',
+      type: 'relationship',
       relationTo: 'users',
-      defaultValue: ({ user }) => user.id,
-      admin: {
-        allowCreate: false,
+      label: 'Created By',
+      hooks: {
+        beforeChange: [setCreatedBy],
       },
       access: {
-        update: () => false,
-        read: () => false,
+        read: ({ req: { user } }) => (user ? true : false),
       },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      index: true, // Index createdBy for fast retrieval of user who created the category
     },
     {
-      type: 'relationship',
       name: 'modifiedBy',
-      label: 'Modified By',
+      type: 'relationship',
       relationTo: 'users',
-      defaultValue: ({ user }) => user.id,
-      admin: {
-        allowCreate: false,
+      label: 'Modified By',
+      hooks: {
+        beforeChange: [setModifiedBy],
       },
       access: {
-        update: () => false,
-        read: () => false,
+        read: ({ req: { user } }) => (user ? true : false),
       },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      index: true, // Index modifiedBy for fast retrieval of user who modified the category
+    },
+    {
+      name: 'slug',
+      index: true, // Index URL for faster searches and ensure it's unique
+      label: 'Slug',
+      type: 'text',
       hooks: {
-        afterChange: [
-          async ({ operation, req, data }) => {
-            if (operation === 'update') {
-              // Your custom logic here
-              data.modifiedBy = req.user.id
-              return data
+        beforeChange: [
+          async ({ data, req }) => {
+            // @ts-ignore
+            if (!data.slug) {
+              if (data?.title) {
+                data.slug = normalizeSearchTerm(data.title)
+              }
+            } else {
+              // @ts-ignore
+              data.slug = normalizeSearchTerm(data.slug)
             }
+            return data?.slug
           },
         ],
       },
@@ -218,9 +227,10 @@ export const Companies: CollectionConfig = {
     {
       name: 'isActive',
       label: 'Active',
-      type: 'checkbox',
+      type: 'checkbox', // Field type for email
       defaultValue: true,
     },
+    ...seoFields,
   ],
 }
 

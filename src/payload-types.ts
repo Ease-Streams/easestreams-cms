@@ -7,17 +7,126 @@
  */
 
 export interface Config {
+  auth: {
+    users: UserAuthOperations;
+    customers: CustomerAuthOperations;
+  };
   collections: {
-    users: User;
-    pages: Page;
     country: Country;
-    customers: Customer;
     state: State;
     city: City;
+    users: User;
+    customers: Customer;
+    media: Media;
+    category: Category;
+    subcategory: Subcategory;
+    products: Product;
+    plans: Plan;
+    subscriptions: Subscription;
+    companies: Company;
+    enquiries: Enquiry;
+    home: Home;
+    brands: Brand;
+    searchtags: Searchtag;
+    'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  globals: {};
+  collectionsJoins: {};
+  collectionsSelect: {
+    country: CountrySelect<false> | CountrySelect<true>;
+    state: StateSelect<false> | StateSelect<true>;
+    city: CitySelect<false> | CitySelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    customers: CustomersSelect<false> | CustomersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    category: CategorySelect<false> | CategorySelect<true>;
+    subcategory: SubcategorySelect<false> | SubcategorySelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    plans: PlansSelect<false> | PlansSelect<true>;
+    subscriptions: SubscriptionsSelect<false> | SubscriptionsSelect<true>;
+    companies: CompaniesSelect<false> | CompaniesSelect<true>;
+    enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
+    home: HomeSelect<false> | HomeSelect<true>;
+    brands: BrandsSelect<false> | BrandsSelect<true>;
+    searchtags: SearchtagsSelect<false> | SearchtagsSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+  };
+  db: {
+    defaultIDType: number;
+  };
+  globals: {
+    seo_elements: SeoElement;
+    home_banner: HomeBanner;
+  };
+  globalsSelect: {
+    seo_elements: SeoElementsSelect<false> | SeoElementsSelect<true>;
+    home_banner: HomeBannerSelect<false> | HomeBannerSelect<true>;
+  };
+  locale: null;
+  user:
+    | (User & {
+        collection: 'users';
+      })
+    | (Customer & {
+        collection: 'customers';
+      });
+  jobs: {
+    tasks: unknown;
+    workflows: unknown;
+  };
+}
+export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface CustomerAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "country".
+ */
+export interface Country {
+  id: number;
+  title: string;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  slug?: string | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -35,44 +144,35 @@ export interface User {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
-  password: string | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
+ * via the `definition` "state".
  */
-export interface Page {
+export interface State {
   id: number;
   title: string;
-  lexicalText?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  countryRef?: (number | null) | Country;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
   slug?: string | null;
-  lexicalText_html?: string | null;
+  isActive?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "country".
+ * via the `definition` "city".
  */
-export interface Country {
+export interface City {
   id: number;
-  name: string;
+  title: string;
+  stateRef: number | State;
+  countryRef?: (number | null) | Country;
   createdBy?: (number | null) | User;
   modifiedBy?: (number | null) | User;
+  slug?: string | null;
   isActive?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -83,7 +183,7 @@ export interface Country {
  */
 export interface Customer {
   id: number;
-  username: string;
+  title: string;
   password: string | null;
   isVerifiedSupplier?: boolean | null;
   isEmailVerified?: boolean | null;
@@ -105,12 +205,201 @@ export interface Customer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "state".
+ * via the `definition` "media".
  */
-export interface State {
+export interface Media {
   id: number;
-  name: string;
-  countryId?: (number | null) | Country;
+  alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category".
+ */
+export interface Category {
+  id: number;
+  title: string;
+  categoryImage?: (number | null) | Media;
+  description?: string | null;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  slug?: string | null;
+  isActive?: boolean | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subcategory".
+ */
+export interface Subcategory {
+  id: number;
+  title: string;
+  categoryImage?: (number | null) | Media;
+  categoryRef: number | Category;
+  description?: string | null;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  slug?: string | null;
+  itemSlug?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: (number | null) | Media;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  title?: string | null;
+  searchtagsRef: (number | Searchtag)[];
+  itemCode?: string | null;
+  brandsRef: (number | Brand)[];
+  productimages?:
+    | {
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  videourls?:
+    | {
+        video?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  specification?:
+    | {
+        key?: string | null;
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  subcategoryRef?: (number | null) | Subcategory;
+  supplierRef?: (number | Company)[] | null;
+  description?: string | null;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  slug?: string | null;
+  itemSlug?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: (number | null) | Media;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "searchtags".
+ */
+export interface Searchtag {
+  id: number;
+  title: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands".
+ */
+export interface Brand {
+  id: number;
+  title: string;
+  image: number | Media;
+  description?: string | null;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  slug?: string | null;
+  isActive?: boolean | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companies".
+ */
+export interface Company {
+  id: number;
+  title: string;
+  logo: number | Media;
+  mobile: string;
+  whatsappno?: string | null;
+  email: string;
+  isEmailVerified?: boolean | null;
+  isVerified?: boolean | null;
+  address: string;
+  po_box?: string | null;
+  brandsRef: (number | Brand)[];
+  additionalinfo?:
+    | {
+        key?: string | null;
+        value?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  branches?:
+    | {
+        branchName: string;
+        contactNo?: string | null;
+        contactPersonName?: string | null;
+        contactEmail?: string | null;
+        location?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  stateRef: number | State;
+  countryRef?: (number | null) | Country;
+  mapUrl?: string | null;
+  subscriptionRef?: (number | null) | Subscription;
+  amount?: number | null;
+  freeEntries?: number | null;
+  description?: string | null;
+  createdBy?: (number | null) | User;
+  modifiedBy?: (number | null) | User;
+  slug?: string | null;
+  isActive?: boolean | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  metaKeywords?: string | null;
+  metaImage?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions".
+ */
+export interface Subscription {
+  id: number;
+  title: string;
+  description: string;
+  amount?: number | null;
+  freeEntries?: number | null;
+  plansref?: (number | null) | Plan;
   createdBy?: (number | null) | User;
   modifiedBy?: (number | null) | User;
   isActive?: boolean | null;
@@ -119,16 +408,164 @@ export interface State {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "city".
+ * via the `definition` "plans".
  */
-export interface City {
+export interface Plan {
   id: number;
-  name: string;
-  stateId: number | State;
-  countryId?: (number | null) | Country;
+  title: string;
+  description: string;
   createdBy?: (number | null) | User;
   modifiedBy?: (number | null) | User;
   isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries".
+ */
+export interface Enquiry {
+  id: number;
+  customerRef?: (number | null) | Customer;
+  enquiryMessgae: string;
+  enquiryType: 'job' | 'promotion' | 'relevant';
+  productRef?: (number | null) | Product;
+  companyRef?: (number | null) | Company;
+  enquiryStatus: string;
+  searchTerm: string;
+  enquiryAttachments: number | Media;
+  modifiedBy?: (number | null) | User;
+  isDeleted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home".
+ */
+export interface Home {
+  id: number;
+  categories?:
+    | {
+        title?: string | null;
+        data?:
+          | {
+              subcategoryref?: (number | null) | Subcategory;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  banners?:
+    | {
+        title?: string | null;
+        data?:
+          | {
+              image?: (number | null) | Media;
+              urlLink?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  products?:
+    | {
+        title?: string | null;
+        data?:
+          | {
+              productRef?: (number | Product)[] | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents".
+ */
+export interface PayloadLockedDocument {
+  id: number;
+  document?:
+    | ({
+        relationTo: 'country';
+        value: number | Country;
+      } | null)
+    | ({
+        relationTo: 'state';
+        value: number | State;
+      } | null)
+    | ({
+        relationTo: 'city';
+        value: number | City;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'customers';
+        value: number | Customer;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'category';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'subcategory';
+        value: number | Subcategory;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'plans';
+        value: number | Plan;
+      } | null)
+    | ({
+        relationTo: 'subscriptions';
+        value: number | Subscription;
+      } | null)
+    | ({
+        relationTo: 'companies';
+        value: number | Company;
+      } | null)
+    | ({
+        relationTo: 'enquiries';
+        value: number | Enquiry;
+      } | null)
+    | ({
+        relationTo: 'home';
+        value: number | Home;
+      } | null)
+    | ({
+        relationTo: 'brands';
+        value: number | Brand;
+      } | null)
+    | ({
+        relationTo: 'searchtags';
+        value: number | Searchtag;
+      } | null);
+  globalSlug?: string | null;
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'customers';
+        value: number | Customer;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -170,6 +607,483 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "country_select".
+ */
+export interface CountrySelect<T extends boolean = true> {
+  title?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  slug?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "state_select".
+ */
+export interface StateSelect<T extends boolean = true> {
+  title?: T;
+  countryRef?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  slug?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "city_select".
+ */
+export interface CitySelect<T extends boolean = true> {
+  title?: T;
+  stateRef?: T;
+  countryRef?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  slug?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "customers_select".
+ */
+export interface CustomersSelect<T extends boolean = true> {
+  title?: T;
+  password?: T;
+  isVerifiedSupplier?: T;
+  isEmailVerified?: T;
+  isActive?: T;
+  location?: T;
+  contact?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "category_select".
+ */
+export interface CategorySelect<T extends boolean = true> {
+  title?: T;
+  categoryImage?: T;
+  description?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  slug?: T;
+  isActive?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  metaKeywords?: T;
+  metaImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subcategory_select".
+ */
+export interface SubcategorySelect<T extends boolean = true> {
+  title?: T;
+  categoryImage?: T;
+  categoryRef?: T;
+  description?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  slug?: T;
+  itemSlug?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  metaKeywords?: T;
+  metaImage?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  searchtagsRef?: T;
+  itemCode?: T;
+  brandsRef?: T;
+  productimages?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  videourls?:
+    | T
+    | {
+        video?: T;
+        id?: T;
+      };
+  specification?:
+    | T
+    | {
+        key?: T;
+        value?: T;
+        id?: T;
+      };
+  subcategoryRef?: T;
+  supplierRef?: T;
+  description?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  slug?: T;
+  itemSlug?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  metaKeywords?: T;
+  metaImage?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "plans_select".
+ */
+export interface PlansSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscriptions_select".
+ */
+export interface SubscriptionsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  amount?: T;
+  freeEntries?: T;
+  plansref?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "companies_select".
+ */
+export interface CompaniesSelect<T extends boolean = true> {
+  title?: T;
+  logo?: T;
+  mobile?: T;
+  whatsappno?: T;
+  email?: T;
+  isEmailVerified?: T;
+  isVerified?: T;
+  address?: T;
+  po_box?: T;
+  brandsRef?: T;
+  additionalinfo?:
+    | T
+    | {
+        key?: T;
+        value?: T;
+        id?: T;
+      };
+  branches?:
+    | T
+    | {
+        branchName?: T;
+        contactNo?: T;
+        contactPersonName?: T;
+        contactEmail?: T;
+        location?: T;
+        id?: T;
+      };
+  stateRef?: T;
+  countryRef?: T;
+  mapUrl?: T;
+  subscriptionRef?: T;
+  amount?: T;
+  freeEntries?: T;
+  description?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  slug?: T;
+  isActive?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  metaKeywords?: T;
+  metaImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries_select".
+ */
+export interface EnquiriesSelect<T extends boolean = true> {
+  customerRef?: T;
+  enquiryMessgae?: T;
+  enquiryType?: T;
+  productRef?: T;
+  companyRef?: T;
+  enquiryStatus?: T;
+  searchTerm?: T;
+  enquiryAttachments?: T;
+  modifiedBy?: T;
+  isDeleted?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home_select".
+ */
+export interface HomeSelect<T extends boolean = true> {
+  categories?:
+    | T
+    | {
+        title?: T;
+        data?:
+          | T
+          | {
+              subcategoryref?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  banners?:
+    | T
+    | {
+        title?: T;
+        data?:
+          | T
+          | {
+              image?: T;
+              urlLink?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  products?:
+    | T
+    | {
+        title?: T;
+        data?:
+          | T
+          | {
+              productRef?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands_select".
+ */
+export interface BrandsSelect<T extends boolean = true> {
+  title?: T;
+  image?: T;
+  description?: T;
+  createdBy?: T;
+  modifiedBy?: T;
+  slug?: T;
+  isActive?: T;
+  metaTitle?: T;
+  metaDescription?: T;
+  metaKeywords?: T;
+  metaImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "searchtags_select".
+ */
+export interface SearchtagsSelect<T extends boolean = true> {
+  title?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents_select".
+ */
+export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
+  document?: T;
+  globalSlug?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-preferences_select".
+ */
+export interface PayloadPreferencesSelect<T extends boolean = true> {
+  user?: T;
+  key?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-migrations_select".
+ */
+export interface PayloadMigrationsSelect<T extends boolean = true> {
+  name?: T;
+  batch?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo_elements".
+ */
+export interface SeoElement {
+  id: number;
+  metaTitle?: string | null;
+  metaKeyword?: string | null;
+  canonical?: string | null;
+  metaDescription?: string | null;
+  pageContent?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home_banner".
+ */
+export interface HomeBanner {
+  id: number;
+  homeBanner?:
+    | {
+        banners?:
+          | {
+              image?: (number | null) | Media;
+              urlLink?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo_elements_select".
+ */
+export interface SeoElementsSelect<T extends boolean = true> {
+  metaTitle?: T;
+  metaKeyword?: T;
+  canonical?: T;
+  metaDescription?: T;
+  pageContent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home_banner_select".
+ */
+export interface HomeBannerSelect<T extends boolean = true> {
+  homeBanner?:
+    | T
+    | {
+        banners?:
+          | T
+          | {
+              image?: T;
+              urlLink?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "auth".
+ */
+export interface Auth {
+  [k: string]: unknown;
 }
 
 

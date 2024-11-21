@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const Subscriptions: CollectionConfig = {
   slug: 'subscriptions', // Collection slug (used for API endpoints)
@@ -48,7 +48,7 @@ export const Subscriptions: CollectionConfig = {
       name: 'createdBy',
       label: 'Created By',
       relationTo: 'users',
-      defaultValue: ({ user }) => user.id,
+      defaultValue: ({ user }) => user?.id,
       admin: {
         allowCreate: false,
       },
@@ -62,7 +62,7 @@ export const Subscriptions: CollectionConfig = {
       name: 'modifiedBy',
       label: 'Modified By',
       relationTo: 'users',
-      defaultValue: ({ user }) => user.id,
+      defaultValue: ({ user }) => user?.id,
       admin: {
         allowCreate: false,
       },
@@ -75,7 +75,8 @@ export const Subscriptions: CollectionConfig = {
           async ({ operation, req, data }) => {
             if (operation === 'update') {
               // Your custom logic here
-              data.modifiedBy = req.user.id
+              // @ts-ignore
+              data.modifiedBy = req.user?.id
               return data
             }
           },

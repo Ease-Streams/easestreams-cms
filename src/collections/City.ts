@@ -1,104 +1,100 @@
-import type { CollectionConfig } from "payload/types";
-
-const fetchStateData: any = async (value: number, cookie: any) => {
-  const response = await fetch(`http://localhost:3000/api/state/${value}`, {
-    method: "GET",
-    headers: {
-      "content-type": "application/json",
-      Cookie: cookie,
-    },
-  });
-  if (response.ok) {
-    return response.json();
-  } else {
-    return false;
-  }
-};
+import type { CollectionConfig } from 'payload'
+import { normalizeSearchTerm } from '../utilities/helper'
+import { setCreatedBy, setModifiedBy } from '../utilities/hooks'
+import payload from 'payload'
 
 export const City: CollectionConfig = {
-  slug: "city", // Collection slug (used for API endpoints)
+  slug: 'city',
   admin: {
-    useAsTitle: "title",
+    useAsTitle: 'title',
   },
   access: {
     read: () => true,
   },
-
   fields: [
     {
-      type: "text", // Field type (text for username)
-      name: "title", // Field name
-      label: "Name", // Label displayed in the admin UI
-      required: true, // Make the field mandatory
+      type: 'text',
+      name: 'title',
+      label: 'Name',
+      required: true,
+      index: true,
     },
     {
-      type: "relationship", // Field type for relationships
-      name: "stateRef",
-      label: "State", // Label displayed in the admin UI
-      relationTo: "state",
-      required: true, // Make the field mandatory
+      type: 'relationship',
+      name: 'stateRef',
+      label: 'State',
+      relationTo: 'state',
+      required: true,
     },
     {
-      name: "countryRef",
-      type: "relationship",
-      label: "Country",
-      relationTo: "country",
+      name: 'countryRef',
+      type: 'relationship',
+      label: 'Country',
+      relationTo: 'country',
     },
     {
-      type: "relationship", // Field type for relationships
-      name: "createdBy",
-      label: "Created By", // Label displayed in the admin UI
-      relationTo: "users",
-      defaultValue: ({ user }) => user.id,
-      access: {
-        update: () => false,
-        read: () => false,
-      },
-    },
-    {
-      type: "relationship", // Field type for relationships
-      name: "modifiedBy",
-      label: "Modified By", // Label displayed in the admin UI
-      relationTo: "users",
-      defaultValue: ({ user }) => user.id,
-      access: {
-        update: () => false,
-        read: () => false,
-      },
+      name: 'createdBy',
+      type: 'relationship',
+      relationTo: 'users',
+      label: 'Created By',
       hooks: {
-        afterChange: [
-          async ({ operation, req, data }) => {
-            if (operation === "update") {
-              // Your custom logic here
-              data.modifiedBy = req.user.id;
-              return data;
+        beforeChange: [setCreatedBy],
+      },
+      access: {
+        read: ({ req: { user } }) => (user ? true : false),
+      },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      index: true,
+    },
+    {
+      name: 'modifiedBy',
+      type: 'relationship',
+      relationTo: 'users',
+      label: 'Modified By',
+      hooks: {
+        beforeChange: [setModifiedBy],
+      },
+      access: {
+        read: ({ req: { user } }) => (user ? true : false),
+      },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      index: true,
+    },
+    {
+      name: 'slug',
+      index: true, // Index URL for faster searches and ensure it's unique
+      label: 'Slug',
+      type: 'text',
+      hooks: {
+        beforeChange: [
+          async ({ data, req }) => {
+            // @ts-ignore
+            if (!data.slug) {
+              if (data?.title) {
+                data.slug = normalizeSearchTerm(data.title)
+              }
+            } else {
+              // @ts-ignore
+              data.slug = normalizeSearchTerm(data.slug)
             }
+            return data?.slug
           },
         ],
       },
     },
     {
-      name: "isActive",
-      label: "Active",
-      type: "checkbox", // Field type for email
+      name: 'isActive',
+      label: 'Active',
+      type: 'checkbox',
       defaultValue: true,
     },
   ],
+}
 
-  hooks: {
-    beforeValidate: [
-      async ({ context, data, req }) => {
-        context.stateData = await fetchStateData(
-          data.stateId,
-          req.headers.cookie
-        );
-        return {
-          ...data,
-          countryId: context.stateData["countryId"]["id"],
-        };
-      },
-    ],
-  },
-};
-
-export default City;
+export default City

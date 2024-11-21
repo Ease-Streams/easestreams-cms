@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const Enquiries: CollectionConfig = {
   slug: 'enquiries',
@@ -73,7 +73,7 @@ export const Enquiries: CollectionConfig = {
       name: 'modifiedBy',
       label: 'Modified By',
       relationTo: 'users',
-      // defaultValue: ({ user }) => user.id,
+      // defaultValue: ({ user }) => user?.id,
       admin: {
         allowCreate: false,
       },
@@ -86,7 +86,7 @@ export const Enquiries: CollectionConfig = {
           async ({ operation, req, data }) => {
             if (operation === 'update') {
               // Your custom logic here
-              data.modifiedBy = req.user.id
+              data.modifiedBy = req.user?.id
               return data
             }
           },

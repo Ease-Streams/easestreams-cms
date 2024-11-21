@@ -1,39 +1,40 @@
-import { webpackBundler } from '@payloadcms/bundler-webpack'
+// storage-adapter-import-placeholder
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { slateEditor } from '@payloadcms/richtext-slate'
-import dotenv from 'dotenv'
+import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import search from '@payloadcms/plugin-search'
-
-dotenv.config({
-  path: path.resolve(__dirname, '../.env'),
-})
-
-import { buildConfig } from 'payload/config'
-import {
-  Country,
-  Customers,
-  State,
-  City,
-  Users,
-  RootCategory,
-  ParentCategory,
-  Products,
-  Media,
-  Companies,
-  Subscriptions,
-  Plans,
-  Enquiries,
-  HomePage,
-  Brands,
-  SearchTags,
-} from './collections/Index'
-import BeforeLogin from './components/BeforeLogin'
+import { buildConfig } from 'payload'
+import { fileURLToPath } from 'url'
+import sharp from 'sharp'
+import Users from './collections/Users'
+import Media from './collections/Media'
+import Brands from './collections/Brands'
+import Country from './collections/Country'
+import State from './collections/State'
+import City from './collections/City'
+import Customers from './collections/Customers'
+import Category from './collections/Category'
+import subCategory from './collections/SubCategory'
+import Products from './collections/Products'
+import Plans from './collections/Plans'
+import Subscriptions from './collections/Subscriptions'
+import Companies from './collections/Companies'
+import Enquiries from './collections/Enquiries'
+import HomePage from './collections/Home'
+import SearchTags from './collections/SearchTags'
 import SeoElements from './globals/SeoElements'
 import HomeBanners from './globals/HomeBanners'
 
+const filename = fileURLToPath(import.meta.url)
+const dirname = path.dirname(filename)
+
 export default buildConfig({
-  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
+  admin: {
+    user: Users.slug,
+    importMap: {
+      baseDir: path.resolve(dirname),
+    },
+  },
   collections: [
     Country,
     State,
@@ -41,8 +42,8 @@ export default buildConfig({
     Users,
     Customers,
     Media,
-    RootCategory,
-    ParentCategory,
+    Category,
+    subCategory,
     Products,
     Plans,
     Subscriptions,
@@ -53,28 +54,19 @@ export default buildConfig({
     SearchTags,
   ],
   globals: [SeoElements, HomeBanners],
-  plugins: [
-    search({
-      collections: ['products', 'parentcategory', 'rootcategory'],
-      defaultPriorities: {},
-    }),
-  ],
-  rateLimit: {
-    max: 100000,
+  editor: lexicalEditor(),
+  secret: process.env.PAYLOAD_SECRET || '',
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  admin: {
-    bundler: webpackBundler(),
-    components: {
-      beforeLogin: [BeforeLogin],
-    },
-  },
-  editor: slateEditor({}),
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI,
+      connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  typescript: {
-    outputFile: path.resolve(__dirname, 'payload-types.ts'),
-  },
+  sharp,
+  plugins: [
+    payloadCloudPlugin(),
+    // storage-adapter-placeholder
+  ],
 })

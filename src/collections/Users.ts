@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -7,8 +7,8 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
   },
   access: {
-    create: ({ req }) => req.user.role == 'admin',
-    update: ({ req, id }) => id == req.user.id || req.user.role == 'admin',
+    create: ({ req }) => req?.user?.role == 'admin',
+    update: ({ req, id }) => id == req.user?.id || req?.user?.role == 'admin',
   },
 
   fields: [
@@ -22,7 +22,7 @@ export const Users: CollectionConfig = {
       required: true,
       defaultValue: 'user',
       access: {
-        update: ({ req }) => req.user.role === 'admin',
+        update: ({ req }) => req?.user?.role === 'admin',
       },
     },
   ],

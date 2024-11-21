@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload/types'
+import { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -6,8 +6,13 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   upload: {
-    adminThumbnail: ({ doc }) => doc.url + '',
     mimeTypes: ['image/*'],
+  },
+  defaultPopulate: {
+    id: true,
+    alt: true,
+    url: true,
+    filename: true,
   },
   fields: [
     {
@@ -16,4 +21,5 @@ export const Media: CollectionConfig = {
     },
   ],
 }
+
 export default Media

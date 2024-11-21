@@ -1,20 +1,17 @@
-import type { CollectionConfig } from "payload/types";
-import { generateUniqueCode } from "../utilities/GenerateSKU";
-import {
-  HTMLConverterFeature,
-  lexicalEditor,
-} from "@payloadcms/richtext-lexical";
-import { getCategoryData, normalizeSearchTerm } from "../utilities/helper";
+import type { CollectionConfig } from 'payload'
+import { generateUniqueCode } from '../utilities/GenerateSKU'
+import { normalizeSearchTerm } from '../utilities/helper'
+import { setCreatedBy, setModifiedBy } from '../utilities/hooks'
+import seoFields from './fields/seoFields'
 
 export const Products: CollectionConfig = {
-  slug: "products", // Collection slug (used for API endpoints)
+  slug: 'products', // Collection slug (used for API endpoints)
   access: {
     read: () => true,
   },
   admin: {
-    useAsTitle: "title",
+    useAsTitle: 'title',
   },
-
   // access: {
   //   read: ({}) => {
   //     return {
@@ -26,258 +23,233 @@ export const Products: CollectionConfig = {
   // },
   fields: [
     {
-      type: "text", // Field type (text for name)
-      name: "title", // Field name
-      label: "Name", // Label displayed in the admin UI
+      type: 'text', // Field type (text for name)
+      name: 'title', // Field name
+      label: 'Name', // Label displayed in the admin UI
       required: false, // Make the field mandatory
       index: true,
     },
     {
-      type: "relationship", // Field type for relationships
-      name: "searchtagsRef",
-      label: "Search tag", // Label displayed in the admin UI
-      relationTo: "searchtags",
+      type: 'relationship', // Field type for relationships
+      name: 'searchtagsRef',
+      label: 'Search tag', // Label displayed in the admin UI
+      relationTo: 'searchtags',
       required: true,
       index: true,
       hasMany: true,
     },
     {
-      type: "text", // Field type (text for name)
-      name: "itemCode", // Field name
-      label: "Item Code", // Label displayed in the admin UI
+      type: 'text', // Field type (text for name)
+      name: 'itemCode', // Field name
+      label: 'Item Code', // Label displayed in the admin UI
       required: false,
       index: true,
       admin: {
         readOnly: true,
       },
-    },
-    {
-      type: "relationship", // Field type for relationships
-      name: "brandsRef",
-      label: "Brands", // Label displayed in the admin UI
-      relationTo: "brands",
-      required: true,
-      index: true,
-      hasMany: true,
-    },
-
-    {
-      name: "productimages", // required
-      type: "array", // required
-      label: "Product Images",
-      required: false,
-      fields: [
-        {
-          type: "relationship",
-          name: "image",
-          label: "Image",
-          relationTo: "media",
-          required: false, // Ensure each item has a valid media relation
-        },
-      ],
-    },
-    {
-      type: "array", // Field type (text for name)
-      name: "videourls", // Field name
-      label: "Video URLs", // Label displayed in the admin UI
-      fields: [
-        {
-          type: "relationship",
-          name: "video",
-          label: "Video",
-          relationTo: "media",
-          required: false, // Ensure each item has a valid media relation
-        },
-      ],
-    },
-    {
-      type: "array", // Field type (text for name)
-      name: "specification", // Field name
-      label: "Specification", // Label displayed in the admin UI
-      required: false, // Make the field mandatory
-      fields: [
-        {
-          type: "text", // Field type (text for name)
-          name: "key",
-          label: "Key",
-        },
-        {
-          type: "text", // Field type (text for name)
-          name: "value",
-          label: "Value",
-        },
-      ],
-    },
-    {
-      type: "relationship", // Field type for relationships
-      name: "parentcategoryref",
-      label: "Parent Category", // Label displayed in the admin UI
-      relationTo: "parentcategory",
-    },
-    {
-      type: "relationship", // Field type for relationships
-      hasMany: true,
-      name: "supplierRef",
-      label: "Suppliers", // Label displayed in the admin UI
-      relationTo: "companies",
-    },
-    {
-      type: "relationship", // Field type for relationships
-      name: "cityref",
-      label: "City", // Label displayed in the admin UI
-      relationTo: "city",
-    },
-    {
-      type: "textarea", // Field type (text for name)
-      name: "description", // Field name,
-      label: "Description", // Label displayed in the admin UI
-      required: false, // Make the field mandatory
-      index: true,
-    },
-    {
-      type: "text", // Field type (text for name)
-      name: "slug", // Field name,
-      label: "Slug", // Label displayed in the admin UI
-      required: false, // Make the field mandatory
-      admin: {
-        readOnly: true,
-      },
-    },
-    {
-      name: "productDescription",
-      type: "richText",
-      editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures,
-          HTMLConverterFeature({}),
+      hooks: {
+        beforeChange: [
+          async ({ data, req, operation }) => {
+            if (operation === 'create' || operation === 'update') {
+              // @ts-ignore
+              return (data.itemCode = await generateUniqueCode(6, req.headers.cookie))
+            }
+          },
         ],
-      }),
+      },
     },
     {
-      name: "metaTitle",
-      type: "text",
-      label: "Meta Title",
-    },
-    {
-      name: "metaKeyword",
-      type: "text",
-      label: "Meta Keywords",
-    },
-    {
-      name: "canonical",
-      type: "text",
-      label: "Canonical",
-    },
-    {
-      name: "metaDescription",
-      type: "text",
-      label: "Meta Description",
+      type: 'relationship', // Field type for relationships
+      name: 'brandsRef',
+      label: 'Brands', // Label displayed in the admin UI
+      relationTo: 'brands',
+      required: true,
+      index: true,
+      hasMany: true,
     },
 
     {
-      type: "relationship", // Field type for relationships
-      name: "createdBy",
-      label: "Created By", // Label displayed in the admin UI
-      relationTo: "users",
-      defaultValue: ({ user }) => user.id,
+      name: 'productimages', // required
+      type: 'array', // required
+      label: 'Product Images',
+      required: false,
+      fields: [
+        {
+          type: 'upload',
+          name: 'image',
+          label: 'Image',
+          relationTo: 'media',
+          required: false, // Ensure each item has a valid media relation
+        },
+      ],
+    },
+    {
+      type: 'array', // Field type (text for name)
+      name: 'videourls', // Field name
+      label: 'Video URLs', // Label displayed in the admin UI
+      fields: [
+        {
+          type: 'relationship',
+          name: 'video',
+          label: 'Video',
+          relationTo: 'media',
+          required: false, // Ensure each item has a valid media relation
+        },
+      ],
+    },
+    {
+      type: 'array', // Field type (text for name)
+      name: 'specification', // Field name
+      label: 'Specification', // Label displayed in the admin UI
+      required: false, // Make the field mandatory
+      fields: [
+        {
+          type: 'text', // Field type (text for name)
+          name: 'key',
+          label: 'Key',
+        },
+        {
+          type: 'text', // Field type (text for name)
+          name: 'value',
+          label: 'Value',
+        },
+      ],
+    },
+    {
+      type: 'relationship', // Field type for relationships
+      name: 'subcategoryRef',
+      label: 'Sub Category', // Label displayed in the admin UI
+      relationTo: 'subcategory',
+      index: true,
+    },
+    {
+      type: 'relationship', // Field type for relationships
+      hasMany: true,
+      index: true,
+      name: 'supplierRef',
+      label: 'Suppliers', // Label displayed in the admin UI
+      relationTo: 'companies',
+    },
+    {
+      type: 'textarea', // Field type (text for name)
+      name: 'description', // Field name
+      label: 'Description', // Label displayed in the admin UI
+      required: false, // Make the field mandatory
+      index: true,
       admin: {
-        position: "sidebar",
-        readOnly: true,
-      },
-      access: {
-        read: () => false,
+        components: {
+          Field: 'src/components/fields/CustomRichText',
+        },
       },
     },
     {
-      type: "relationship", // Field type for relationships
-      name: "modifiedBy",
-      label: "Modified By", // Label displayed in the admin UI
-      relationTo: "users",
-      defaultValue: ({ user }) => user.id,
-      admin: {
-        position: "sidebar",
-        readOnly: true,
+      name: 'createdBy',
+      type: 'relationship',
+      relationTo: 'users',
+      label: 'Created By',
+      hooks: {
+        beforeChange: [setCreatedBy],
       },
       access: {
-        read: () => false,
+        read: ({ req: { user } }) => (user ? true : false),
+      },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      index: true, // Index createdBy for fast retrieval of user who created the category
+    },
+    {
+      name: 'modifiedBy',
+      type: 'relationship',
+      relationTo: 'users',
+      label: 'Modified By',
+      hooks: {
+        beforeChange: [setModifiedBy],
+      },
+      access: {
+        read: ({ req: { user } }) => (user ? true : false),
+      },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+      index: true, // Index modifiedBy for fast retrieval of user who modified the category
+    },
+    {
+      name: 'slug',
+      index: true, // Index URL for faster searches and ensure it's unique
+      label: 'Slug',
+      type: 'text',
+      hooks: {
+        beforeChange: [
+          async ({ data, req, operation }) => {
+            if (operation === 'create' || operation === 'update') {
+              // @ts-ignore
+              if (data.subcategoryRef) {
+                // Fetch the related subcategory
+                // @ts-ignore
+                let subcategory
+                try {
+                  subcategory = await req.payload.findByID({
+                    collection: 'subcategory',
+                    // @ts-ignore
+                    id: data.subcategoryRef,
+                  })
+                } catch (error) {
+                  console.error('Error fetching subcategory:', error)
+                }
+                console.log('Subcategory:', subcategory)
+
+                if (subcategory) {
+                  // Normalize the slugs
+                  const subCategorySlug = subcategory.slug
+                  const productSlug = data?.title ? normalizeSearchTerm(data.title) : ''
+
+                  // Combine category, subcategory, and product slugs
+                  // @ts-ignore
+                  data.slug = `${subCategorySlug}/${productSlug}`
+                  // @ts-ignore
+                  console.log('Generated Slug:', data.slug)
+                } else {
+                  // @ts-ignore
+                  data.slug = normalizeSearchTerm(data.title || '')
+                }
+              } else {
+                // @ts-ignore
+                data.slug = normalizeSearchTerm(data.title || '')
+              }
+            }
+            // @ts-ignore
+            return data.slug
+          },
+        ],
       },
     },
     {
-      name: "isDeleted",
-      label: "Deleted?",
-      type: "checkbox",
-      defaultValue: false,
+      name: 'itemSlug',
+      index: true, // Index URL for faster searches and ensure it's unique
+      label: 'Item Slug',
+      type: 'text',
+      hooks: {
+        beforeChange: [
+          async ({ data, req, operation }) => {
+            // @ts-ignore
+            data.itemSlug = normalizeSearchTerm(data.title || '')
+            // @ts-ignore
+            return data.itemSlug
+          },
+        ],
+      },
+    },
+    ...seoFields,
+    {
+      name: 'isActive',
+      label: 'Active',
+      type: 'checkbox', // Field type for email
+      defaultValue: true,
     },
   ],
-  hooks: {
-    afterRead: [
-      async ({ doc, req }) => {
-        delete doc?.isDeleted;
-        delete doc?.updatedAt;
-        delete doc?.createdAt;
+}
 
-        delete doc?.parentcategoryref?.metaTitle;
-        delete doc?.parentcategoryref?.metaDescription;
-        delete doc?.parentcategoryref?.canonical;
-        delete doc?.parentcategoryref?.metaKeyword;
-        delete doc?.parentcategoryref?.pageContent;
-
-        delete doc?.parentcategoryref?.rootCategoryRef?.metaTitle;
-        delete doc?.parentcategoryref?.rootCategoryRef?.metaDescription;
-        delete doc?.parentcategoryref?.rootCategoryRef?.canonical;
-        delete doc?.parentcategoryref?.rootCategoryRef?.metaKeyword;
-        delete doc?.parentcategoryref?.rootCategoryRef?.pageContent;
-
-        delete doc?.parentcategoryref?.isDeleted;
-        delete doc?.parentcategoryref?.updatedAt;
-        delete doc?.parentcategoryref?.createdAt;
-
-        delete doc?.parentcategoryref?.rootCategoryRef?.isDeleted;
-        delete doc?.parentcategoryref?.rootCategoryRef?.updatedAt;
-        delete doc?.parentcategoryref?.rootCategoryRef?.createdAt;
-
-        delete doc?.cityref?.isDeleted;
-        delete doc?.cityref?.updatedAt;
-        delete doc?.cityref?.createdAt;
-        delete doc?.cityref?.isActive;
-
-        delete doc?.cityref?.stateRef?.isDeleted;
-        delete doc?.cityref?.stateRef?.updatedAt;
-        delete doc?.cityref?.stateRef?.createdAt;
-        delete doc?.cityref?.stateRef?.isActive;
-
-        delete doc?.cityref?.countryRef?.isDeleted;
-        delete doc?.cityref?.countryRef?.updatedAt;
-        delete doc?.cityref?.countryRef?.createdAt;
-        delete doc?.cityref?.countryRef?.isActive;
-        return doc;
-      },
-    ],
-    beforeValidate: [
-      async ({ data, req, operation }) => {
-        if (operation == "create") {
-          data["createdBy"] = req.user.id;
-          data["modifiedBy"] = req.user.id;
-          data["itemCode"] = await generateUniqueCode(6, req.headers.cookie);
-          let category = await getCategoryData(data.parentcategoryref);
-          console.log(category, "category");
-          data["slug"] = `/${normalizeSearchTerm(
-            category?.rootCategoryRef?.title
-          )}/${normalizeSearchTerm(category.title)}/${normalizeSearchTerm(
-            data.title
-          )}-${data["itemCode"]}`;
-        } else if (operation == "update") {
-          data["modifiedBy"] = req.user.id;
-        }
-        return {
-          ...data,
-          itemCode: data["itemCode"],
-          createdBy: data.createdBy ? data.createdBy : data["createdBy"],
-          modifiedBy: data["modifiedBy"],
-        };
-      },
-    ],
-  },
-};
-
-export default Products;
+export default Products

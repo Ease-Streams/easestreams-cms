@@ -1,9 +1,9 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const HomePage: CollectionConfig = {
   slug: 'home', // Collection slug (used for API endpoints)
   admin: {
-    useAsTitle: 'title',
+    useAsTitle: 'categories',
   },
   access: {
     read: () => true,
@@ -24,9 +24,9 @@ export const HomePage: CollectionConfig = {
           fields: [
             {
               type: 'relationship', // Field type for relationships
-              name: 'parentcategoryref',
+              name: 'subcategoryref',
               label: 'Parent Category', // Label displayed in the admin UI
-              relationTo: 'parentcategory',
+              relationTo: 'subcategory',
             },
           ],
         },

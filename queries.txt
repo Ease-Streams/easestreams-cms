@@ -1,0 +1,4 @@
+fetching all products for sub category
+http://localhost:3000/api/products?select[title]=true&select[itemCode]=true&select[productimages]=true&select[brandsRef]=true&select[specification]=true&select[slug]=true&where[isActive][equals]=true&where[subcategoryRef.itemSlug][equals]=this-is-a-sub-category
+
+http://localhost:3000/api/products?select[title]=true&select[slug]=true&where[isActive][equals]=true

@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 export const SearchTags: CollectionConfig = {
   slug: 'searchtags', // Collection slug (used for API endpoints)
