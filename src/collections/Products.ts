@@ -199,7 +199,6 @@ export const Products: CollectionConfig = {
                 } catch (error) {
                   console.error('Error fetching subcategory:', error)
                 }
-                console.log('Subcategory:', subcategory)
 
                 if (subcategory) {
                   // Normalize the slugs
@@ -210,7 +209,6 @@ export const Products: CollectionConfig = {
                   // @ts-ignore
                   data.slug = `${subCategorySlug}/${productSlug}`
                   // @ts-ignore
-                  console.log('Generated Slug:', data.slug)
                 } else {
                   // @ts-ignore
                   data.slug = normalizeSearchTerm(data.title || '')
