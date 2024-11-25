@@ -4,7 +4,7 @@ import { execSync } from 'child_process'
 const buildApplication = () => {
   try {
     console.log('Building the Payload CMS application...')
-    // execSync('npm run build', { stdio: 'inherit' })
+    execSync('npm run build', { stdio: 'inherit' })
     console.log('Build completed successfully!')
   } catch (error) {
     console.error('Error during build:', error)
