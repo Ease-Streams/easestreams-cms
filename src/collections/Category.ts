@@ -13,6 +13,10 @@ export const Category: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
   },
+  defaultPopulate: {
+    title: true,
+    slug: true,
+  },
   fields: [
     {
       type: 'text', // Field type (text for name)
@@ -22,24 +26,142 @@ export const Category: CollectionConfig = {
       index: true,
     },
     {
-      type: 'upload',
-      name: 'categoryImage',
-      label: 'Image',
-      relationTo: 'media',
-      required: false, // Ensure each item has a valid media relation
+      type: 'collapsible', // Collapsible field
+      label: 'Heading Content', // Label for the collapsible section
+      fields: [
+        {
+          type: 'textarea', // Textarea field
+          name: 'headingContent', // Field name
+          label: 'Content', // Label for the textarea
+          admin: {
+            components: {
+              Field: 'src/components/fields/CustomRichText', // Custom rich text editor if needed
+            },
+          },
+        },
+        {
+          type: 'upload', // Image upload field
+          name: 'headingImage',
+          label: 'Image',
+          relationTo: 'media', // Relates to media collection for storing images
+        },
+      ],
     },
     {
-      type: 'textarea', // Field type (text for name)
-      name: 'description', // Field name
-      label: 'Description', // Label displayed in the admin UI
-      required: false, // Make the field mandatory
-      index: true,
-      admin: {
-        components: {
-          Field: 'src/components/fields/CustomRichText',
+      type: 'array',
+      name: 'subCategoryList',
+      label: 'Sub Category List',
+      fields: [
+        {
+          type: 'text',
+          name: 'title',
+          label: 'Title',
         },
-      },
+        {
+          type: 'textarea',
+          name: 'content',
+          label: 'Content',
+        },
+        {
+          name: 'subCategories',
+          label: 'Sub Category',
+          type: 'relationship',
+          relationTo: 'subcategory',
+          hasMany: true,
+        },
+      ],
     },
+    {
+      type: 'group',
+      name: 'brandGroup',
+      label: 'Brands',
+      fields: [
+        {
+          type: 'text',
+          name: 'title',
+          label: 'Title',
+        },
+        {
+          type: 'array',
+          name: 'brandList',
+          label: 'Brands',
+          fields: [
+            {
+              type: 'text',
+              name: 'title',
+              label: 'Title',
+            },
+            {
+              name: 'brands',
+              label: 'Brands',
+              type: 'relationship',
+              relationTo: 'brands',
+              hasMany: true,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'array',
+      name: 'categoryImage',
+      label: 'Category Image',
+      required: false, // Ensure each item has a valid media relation
+      fields: [
+        {
+          type: 'upload',
+          name: 'image',
+          label: 'Image',
+          relationTo: 'media',
+        },
+      ],
+    },
+    {
+      name: 'pageContent',
+      label: 'Page Content',
+      type: 'array',
+      fields: [
+        {
+          name: 'pageContent',
+          type: 'blocks',
+          label: 'Page Content',
+          blocks: [
+            {
+              slug: 'contentBlock', // Slug for the content block
+              fields: [
+                {
+                  name: 'content',
+                  label: 'Content',
+                  type: 'textarea',
+                  admin: {
+                    components: {
+                      Field: 'src/components/fields/CustomRichText',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              slug: 'imageBlock', // Slug for the image block
+              fields: [
+                {
+                  type: 'upload',
+                  name: 'image',
+                  label: 'Image',
+                  relationTo: 'media', // Relates to media collection for storing images
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'tableContent',
+      label: 'Table Content',
+      type: 'textarea',
+    },
+
     {
       name: 'createdBy',
       type: 'relationship',
@@ -83,14 +205,7 @@ export const Category: CollectionConfig = {
         beforeChange: [
           async ({ data, req }) => {
             // @ts-ignore
-            if (!data.slug) {
-              if (data?.title) {
-                data.slug = normalizeSearchTerm(data.title)
-              }
-            } else {
-              // @ts-ignore
-              data.slug = normalizeSearchTerm(data.slug)
-            }
+            data.slug = normalizeSearchTerm(data.title)
             return data?.slug
           },
         ],

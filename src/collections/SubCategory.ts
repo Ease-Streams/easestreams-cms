@@ -1,9 +1,7 @@
-import { HTMLConverterFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 import seoFields from './fields/seoFields'
 import { normalizeSearchTerm } from '../utilities/helper'
 import { setCreatedBy, setModifiedBy } from '../utilities/hooks'
-import CustomRichText from '../components/fields/CustomRichText'
 
 export const subCategory: CollectionConfig = {
   slug: 'subcategory', // Collection slug (used for API endpoints)
@@ -20,6 +18,25 @@ export const subCategory: CollectionConfig = {
   },
   fields: [
     {
+      name: 'banners',
+      type: 'array',
+      label: 'Banner Images',
+      fields: [
+        {
+          type: 'upload',
+          name: 'image',
+          label: 'Image',
+          relationTo: 'media',
+          required: false, // Ensure each item has a valid media relation
+        },
+        {
+          name: 'urlLink',
+          type: 'text',
+          label: 'Banner URL Link',
+        },
+      ],
+    },
+    {
       type: 'text', // Field type (text for name)
       name: 'title', // Field name
       label: 'Category Name', // Label displayed in the admin UI
@@ -27,11 +44,18 @@ export const subCategory: CollectionConfig = {
       index: true,
     },
     {
-      type: 'upload',
+      type: 'array',
       name: 'categoryImage',
-      label: 'Image',
-      relationTo: 'media',
+      label: 'Category Image',
       required: false, // Ensure each item has a valid media relation
+      fields: [
+        {
+          type: 'upload',
+          name: 'image',
+          label: 'Image',
+          relationTo: 'media',
+        },
+      ],
     },
     {
       type: 'relationship', // Field type for relationships
@@ -42,16 +66,33 @@ export const subCategory: CollectionConfig = {
       index: true,
     },
     {
-      type: 'textarea', // Field type (text for name)
-      name: 'description', // Field name
-      label: 'Description', // Label displayed in the admin UI
-      required: false, // Make the field mandatory
-      index: true,
-      admin: {
-        components: {
-          Field: 'src/components/fields/CustomRichText',
+      type: 'array',
+      name: 'productList',
+      label: 'Product List',
+      fields: [
+        {
+          type: 'text',
+          name: 'title',
+          label: 'Title',
         },
-      },
+        {
+          type: 'text',
+          name: 'subTitle',
+          label: 'Sub Title',
+        },
+        {
+          type: 'textarea',
+          name: 'content',
+          label: 'Content',
+        },
+        {
+          name: 'products',
+          label: 'products',
+          type: 'relationship',
+          relationTo: 'products',
+          hasMany: true,
+        },
+      ],
     },
     {
       name: 'createdBy',

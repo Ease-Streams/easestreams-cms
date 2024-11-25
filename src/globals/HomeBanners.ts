@@ -8,28 +8,21 @@ export const HomeBanners: GlobalConfig = {
   },
   fields: [
     {
-      name: 'homeBanner',
+      name: 'banners',
       type: 'array',
+      label: 'Banner Images',
       fields: [
         {
-          name: 'banners', // required
-          type: 'array', // required
-          label: 'Banner Images',
-          required: false,
-          fields: [
-            {
-              type: 'upload',
-              name: 'image',
-              label: 'Image',
-              relationTo: 'media',
-              required: false, // Ensure each item has a valid media relation
-            },
-            {
-              name: 'urlLink',
-              type: 'text',
-              label: 'Banner URL Link',
-            },
-          ],
+          type: 'upload',
+          name: 'image',
+          label: 'Image',
+          relationTo: 'media',
+          required: false, // Ensure each item has a valid media relation
+        },
+        {
+          name: 'urlLink',
+          type: 'text',
+          label: 'Banner URL Link',
         },
       ],
     },
