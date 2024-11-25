@@ -1,5 +1,5 @@
-const instances = 1;
-const basePort = 9000;
+const instances = 1
+const basePort = 9000
 
 module.exports = {
   apps: Array.from({ length: instances }, (_, index) => ({

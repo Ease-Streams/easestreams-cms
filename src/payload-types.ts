@@ -231,8 +231,54 @@ export interface Media {
 export interface Category {
   id: number;
   title: string;
-  categoryImage?: (number | null) | Media;
-  description?: string | null;
+  headingContent?: string | null;
+  headingImage?: (number | null) | Media;
+  subCategoryList?:
+    | {
+        title?: string | null;
+        content?: string | null;
+        subCategories?: (number | Subcategory)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  brandGroup?: {
+    title?: string | null;
+    brandList?:
+      | {
+          title?: string | null;
+          brands?: (number | Brand)[] | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  categoryImage?:
+    | {
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  pageContent?:
+    | {
+        pageContent?:
+          | (
+              | {
+                  content?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'contentBlock';
+                }
+              | {
+                  image?: (number | null) | Media;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'imageBlock';
+                }
+            )[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  tableContent?: string | null;
   createdBy?: (number | null) | User;
   modifiedBy?: (number | null) | User;
   slug?: string | null;
@@ -250,10 +296,30 @@ export interface Category {
  */
 export interface Subcategory {
   id: number;
+  banners?:
+    | {
+        image?: (number | null) | Media;
+        urlLink?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   title: string;
-  categoryImage?: (number | null) | Media;
+  categoryImage?:
+    | {
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
   categoryRef: number | Category;
-  description?: string | null;
+  productList?:
+    | {
+        title?: string | null;
+        subTitle?: string | null;
+        content?: string | null;
+        products?: (number | Product)[] | null;
+        id?: string | null;
+      }[]
+    | null;
   createdBy?: (number | null) | User;
   modifiedBy?: (number | null) | User;
   slug?: string | null;
@@ -276,7 +342,7 @@ export interface Product {
   searchtagsRef: (number | Searchtag)[];
   itemCode?: string | null;
   brandsRef: (number | Brand)[];
-  productimages?:
+  productImages?:
     | {
         image?: (number | null) | Media;
         id?: string | null;
@@ -295,9 +361,10 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  topDescription?: string | null;
+  bottomDescription?: string | null;
   subcategoryRef?: (number | null) | Subcategory;
   supplierRef?: (number | Company)[] | null;
-  description?: string | null;
   createdBy?: (number | null) | User;
   modifiedBy?: (number | null) | User;
   slug?: string | null;
@@ -738,8 +805,58 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface CategorySelect<T extends boolean = true> {
   title?: T;
-  categoryImage?: T;
-  description?: T;
+  headingContent?: T;
+  headingImage?: T;
+  subCategoryList?:
+    | T
+    | {
+        title?: T;
+        content?: T;
+        subCategories?: T;
+        id?: T;
+      };
+  brandGroup?:
+    | T
+    | {
+        title?: T;
+        brandList?:
+          | T
+          | {
+              title?: T;
+              brands?: T;
+              id?: T;
+            };
+      };
+  categoryImage?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  pageContent?:
+    | T
+    | {
+        pageContent?:
+          | T
+          | {
+              contentBlock?:
+                | T
+                | {
+                    content?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              imageBlock?:
+                | T
+                | {
+                    image?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+            };
+        id?: T;
+      };
+  tableContent?: T;
   createdBy?: T;
   modifiedBy?: T;
   slug?: T;
@@ -756,10 +873,30 @@ export interface CategorySelect<T extends boolean = true> {
  * via the `definition` "subcategory_select".
  */
 export interface SubcategorySelect<T extends boolean = true> {
+  banners?:
+    | T
+    | {
+        image?: T;
+        urlLink?: T;
+        id?: T;
+      };
   title?: T;
-  categoryImage?: T;
+  categoryImage?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
   categoryRef?: T;
-  description?: T;
+  productList?:
+    | T
+    | {
+        title?: T;
+        subTitle?: T;
+        content?: T;
+        products?: T;
+        id?: T;
+      };
   createdBy?: T;
   modifiedBy?: T;
   slug?: T;
@@ -781,7 +918,7 @@ export interface ProductsSelect<T extends boolean = true> {
   searchtagsRef?: T;
   itemCode?: T;
   brandsRef?: T;
-  productimages?:
+  productImages?:
     | T
     | {
         image?: T;
@@ -800,9 +937,10 @@ export interface ProductsSelect<T extends boolean = true> {
         value?: T;
         id?: T;
       };
+  topDescription?: T;
+  bottomDescription?: T;
   subcategoryRef?: T;
   supplierRef?: T;
-  description?: T;
   createdBy?: T;
   modifiedBy?: T;
   slug?: T;
@@ -1067,15 +1205,10 @@ export interface SeoElement {
  */
 export interface HomeBanner {
   id: number;
-  homeBanner?:
+  banners?:
     | {
-        banners?:
-          | {
-              image?: (number | null) | Media;
-              urlLink?: string | null;
-              id?: string | null;
-            }[]
-          | null;
+        image?: (number | null) | Media;
+        urlLink?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1101,16 +1234,11 @@ export interface SeoElementsSelect<T extends boolean = true> {
  * via the `definition` "home_banner_select".
  */
 export interface HomeBannerSelect<T extends boolean = true> {
-  homeBanner?:
+  banners?:
     | T
     | {
-        banners?:
-          | T
-          | {
-              image?: T;
-              urlLink?: T;
-              id?: T;
-            };
+        image?: T;
+        urlLink?: T;
         id?: T;
       };
   updatedAt?: T;

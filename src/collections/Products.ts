@@ -21,6 +21,14 @@ export const Products: CollectionConfig = {
   //     }
   //   },
   // },
+  defaultPopulate: {
+    title: true,
+    itemCode: true,
+    slug: true,
+    brandsRef: true,
+    productImages: true,
+    specification: true,
+  },
   fields: [
     {
       type: 'text', // Field type (text for name)
@@ -67,19 +75,17 @@ export const Products: CollectionConfig = {
       index: true,
       hasMany: true,
     },
-
     {
-      name: 'productimages', // required
-      type: 'array', // required
-      label: 'Product Images',
-      required: false,
+      type: 'array',
+      name: 'productImages',
+      label: 'Product Image',
+      required: false, // Ensure each item has a valid media relation
       fields: [
         {
           type: 'upload',
           name: 'image',
           label: 'Image',
           relationTo: 'media',
-          required: false, // Ensure each item has a valid media relation
         },
       ],
     },
@@ -116,6 +122,30 @@ export const Products: CollectionConfig = {
       ],
     },
     {
+      type: 'textarea', // Field type (text for name)
+      name: 'topDescription', // Field name
+      label: 'Top Description', // Label displayed in the admin UI
+      required: false, // Make the field mandatory
+      index: true,
+      admin: {
+        components: {
+          Field: 'src/components/fields/CustomRichText',
+        },
+      },
+    },
+    {
+      type: 'textarea', // Field type (text for name)
+      name: 'bottomDescription', // Field name
+      label: 'Bottom Description', // Label displayed in the admin UI
+      required: false, // Make the field mandatory
+      index: true,
+      admin: {
+        components: {
+          Field: 'src/components/fields/CustomRichText',
+        },
+      },
+    },
+    {
       type: 'relationship', // Field type for relationships
       name: 'subcategoryRef',
       label: 'Sub Category', // Label displayed in the admin UI
@@ -129,18 +159,6 @@ export const Products: CollectionConfig = {
       name: 'supplierRef',
       label: 'Suppliers', // Label displayed in the admin UI
       relationTo: 'companies',
-    },
-    {
-      type: 'textarea', // Field type (text for name)
-      name: 'description', // Field name
-      label: 'Description', // Label displayed in the admin UI
-      required: false, // Make the field mandatory
-      index: true,
-      admin: {
-        components: {
-          Field: 'src/components/fields/CustomRichText',
-        },
-      },
     },
     {
       name: 'createdBy',

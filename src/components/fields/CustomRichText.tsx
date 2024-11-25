@@ -5,7 +5,7 @@ import FroalaEditor from 'react-froala-wysiwyg'
 import 'froala-editor/js/plugins.pkgd.min.js'
 import 'froala-editor/css/froala_editor.pkgd.min.css'
 
-const CustomTextField = ({ path, label }) => {
+const CustomTextField = ({ path, field }) => {
   const { value, setValue } = useField<string>({ path })
   const [editorContent, setEditorContent] = useState('')
 
@@ -20,7 +20,7 @@ const CustomTextField = ({ path, label }) => {
 
   return (
     <div className="field-type text-field">
-      <label className="field-label">{path}</label>
+      <label className="field-label">{field.label}</label>
       <FroalaEditor
         model={editorContent}
         onModelChange={handleEditorChange}
