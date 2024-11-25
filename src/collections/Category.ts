@@ -161,7 +161,6 @@ export const Category: CollectionConfig = {
       label: 'Table Content',
       type: 'textarea',
     },
-
     {
       name: 'createdBy',
       type: 'relationship',

@@ -95,6 +95,51 @@ export const subCategory: CollectionConfig = {
       ],
     },
     {
+      name: 'pageContent',
+      label: 'Page Content',
+      type: 'array',
+      fields: [
+        {
+          name: 'pageContent',
+          type: 'blocks',
+          label: 'Page Content',
+          blocks: [
+            {
+              slug: 'contentBlock', // Slug for the content block
+              fields: [
+                {
+                  name: 'content',
+                  label: 'Content',
+                  type: 'textarea',
+                  admin: {
+                    components: {
+                      Field: 'src/components/fields/CustomRichText',
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              slug: 'imageBlock', // Slug for the image block
+              fields: [
+                {
+                  type: 'upload',
+                  name: 'image',
+                  label: 'Image',
+                  relationTo: 'media', // Relates to media collection for storing images
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'tableContent',
+      label: 'Table Content',
+      type: 'textarea',
+    },
+    {
       name: 'createdBy',
       type: 'relationship',
       relationTo: 'users',
