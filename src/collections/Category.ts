@@ -1,7 +1,7 @@
 import { HTMLConverterFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import type { CollectionConfig } from 'payload'
 import seoFields from './fields/seoFields'
-import { normalizeSearchTerm } from '../utilities/helper'
+import { checkCreateAccess, normalizeSearchTerm } from '../utilities/helper'
 import { setCreatedBy, setModifiedBy } from '../utilities/hooks'
 import CustomRichText from '../components/fields/CustomRichText'
 
@@ -9,6 +9,9 @@ export const Category: CollectionConfig = {
   slug: 'category', // Collection slug (used for API endpoints)
   access: {
     read: () => true,
+    update: ({ req: { user } }) => (user?.role ? true : false),
+    create: ({ req: { user } }) => (user?.role ? true : false),
+    delete: ({ req: { user } }) => (user?.role ? true : false),
   },
   admin: {
     useAsTitle: 'title',
