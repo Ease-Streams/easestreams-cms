@@ -36,9 +36,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  csrf: [
-    'https://cms.easestreams.com', // production
-  ],
+
   collections: [
     Country,
     State,

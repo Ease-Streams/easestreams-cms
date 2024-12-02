@@ -19,6 +19,7 @@ export const Category: CollectionConfig = {
   defaultPopulate: {
     title: true,
     slug: true,
+    categoryImage: true,
   },
   fields: [
     {

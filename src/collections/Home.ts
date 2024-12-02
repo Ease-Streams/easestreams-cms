@@ -1,87 +1,144 @@
 import type { CollectionConfig } from 'payload'
 
 export const HomePage: CollectionConfig = {
-  slug: 'home', // Collection slug (used for API endpoints)
+  slug: 'home',
   admin: {
-    useAsTitle: 'categories',
+    useAsTitle: 'title', // Use a simpler field if available
   },
   access: {
     read: () => true,
   },
   fields: [
     {
-      name: 'categories',
-      type: 'array', // Use an array field for nested data
-      fields: [
-        {
-          name: 'title',
-          type: 'text',
-          label: 'Category Title',
-        },
-        {
-          name: 'data',
-          type: 'array',
-          fields: [
-            {
-              type: 'relationship', // Field type for relationships
-              name: 'subcategoryref',
-              label: 'Parent Category', // Label displayed in the admin UI
-              relationTo: 'subcategory',
-            },
-          ],
-        },
-      ],
+      name: 'title',
+      type: 'text',
+      label: 'Page Title',
+      defaultValue: 'Home Page',
     },
     {
-      name: 'banners',
-      type: 'array',
-      fields: [
+      name: 'sections',
+      type: 'blocks',
+      label: 'Homepage Sections',
+      blocks: [
         {
-          name: 'title',
-          type: 'text',
-          label: 'Banner Title',
-        },
-        {
-          name: 'data', // required
-          type: 'array', // required
-          label: 'Banner Images',
-          required: false,
+          slug: 'products',
+          labels: {
+            singular: 'Products Section',
+            plural: 'Products Sections',
+          },
           fields: [
+            {
+              name: 'title',
+              type: 'text',
+              label: 'Section Title',
+              required: true,
+            },
             {
               type: 'relationship',
-              name: 'image',
-              label: 'Image',
-              relationTo: 'media',
-              required: false, // Ensure each item has a valid media relation
-            },
-            {
-              name: 'urlLink',
-              type: 'text',
-              label: 'Banner URL Link',
+              name: 'productRefs',
+              label: 'Products',
+              relationTo: 'products',
+              hasMany: true,
             },
           ],
         },
-      ],
-    },
-    {
-      name: 'products',
-      type: 'array',
-      fields: [
         {
-          name: 'title',
-          type: 'text',
-          label: 'Product Title',
-        },
-        {
-          name: 'data',
-          type: 'array',
+          slug: 'categories',
+          labels: {
+            singular: 'Category Section',
+            plural: 'Category Sections',
+          },
           fields: [
             {
-              type: 'relationship', // Field type for relationships
-              name: 'productRef',
-              label: 'Product', // Label displayed in the admin UI
-              relationTo: 'products',
+              name: 'title',
+              type: 'text',
+              label: 'Section Title',
+              required: true,
+            },
+            {
+              type: 'relationship',
+              name: 'categoryRefs',
+              label: 'Categories',
+              relationTo: 'category',
               hasMany: true,
+            },
+          ],
+        },
+        {
+          slug: 'subcategories',
+          labels: {
+            singular: 'Subcategory Section',
+            plural: 'Subcategory Sections',
+          },
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+              label: 'Section Title',
+              required: true,
+            },
+            {
+              type: 'relationship',
+              name: 'subcategoryRefs',
+              label: 'Subcategories',
+              relationTo: 'subcategory',
+              hasMany: true,
+            },
+          ],
+        },
+        {
+          slug: 'brands',
+          labels: {
+            singular: 'Brand Section',
+            plural: 'Brand Sections',
+          },
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+              label: 'Section Title',
+              required: true,
+            },
+            {
+              type: 'relationship',
+              name: 'brandRefs',
+              label: 'Brands',
+              relationTo: 'brands',
+              hasMany: true,
+            },
+          ],
+        },
+        {
+          slug: 'banners',
+          labels: {
+            singular: 'Banner Section',
+            plural: 'Banner Sections',
+          },
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+              label: 'Banner Title',
+              required: true,
+            },
+            {
+              name: 'banners',
+              type: 'array',
+              label: 'Banners',
+              fields: [
+                {
+                  type: 'relationship',
+                  name: 'bannerImage',
+                  label: 'Image',
+                  relationTo: 'media',
+                },
+                {
+                  name: 'urlLink',
+                  type: 'text',
+                  label: 'Banner URL',
+                  required: true,
+                },
+              ],
             },
           ],
         },
