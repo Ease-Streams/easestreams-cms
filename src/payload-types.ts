@@ -17,7 +17,6 @@ export interface Config {
     city: City;
     users: User;
     customers: Customer;
-    media: Media;
     category: Category;
     subcategory: Subcategory;
     products: Product;
@@ -29,6 +28,7 @@ export interface Config {
     home: Home;
     brands: Brand;
     searchtags: Searchtag;
+    media: Media;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -40,7 +40,6 @@ export interface Config {
     city: CitySelect<false> | CitySelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     category: CategorySelect<false> | CategorySelect<true>;
     subcategory: SubcategorySelect<false> | SubcategorySelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
@@ -52,6 +51,7 @@ export interface Config {
     home: HomeSelect<false> | HomeSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
     searchtags: SearchtagsSelect<false> | SearchtagsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -207,25 +207,6 @@ export interface Customer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "category".
  */
 export interface Category {
@@ -292,6 +273,25 @@ export interface Category {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subcategory".
  */
 export interface Subcategory {
@@ -320,6 +320,28 @@ export interface Subcategory {
         id?: string | null;
       }[]
     | null;
+  pageContent?:
+    | {
+        pageContent?:
+          | (
+              | {
+                  content?: string | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'contentBlock';
+                }
+              | {
+                  image?: (number | null) | Media;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'imageBlock';
+                }
+            )[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  tableContent?: string | null;
   createdBy?: (number | null) | User;
   modifiedBy?: (number | null) | User;
   slug?: string | null;
@@ -356,8 +378,14 @@ export interface Product {
     | null;
   specification?:
     | {
-        key?: string | null;
-        value?: string | null;
+        title?: string | null;
+        specifications?:
+          | {
+              key?: string | null;
+              value?: string | null;
+              id?: string | null;
+            }[]
+          | null;
         id?: string | null;
       }[]
     | null;
@@ -531,42 +559,51 @@ export interface Enquiry {
  */
 export interface Home {
   id: number;
-  categories?:
-    | {
-        title?: string | null;
-        data?:
-          | {
-              subcategoryref?: (number | null) | Subcategory;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  banners?:
-    | {
-        title?: string | null;
-        data?:
-          | {
-              image?: (number | null) | Media;
-              urlLink?: string | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
-  products?:
-    | {
-        title?: string | null;
-        data?:
-          | {
-              productRef?: (number | Product)[] | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
+  title?: string | null;
+  sections?:
+    | (
+        | {
+            title: string;
+            productRefs?: (number | Product)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'products';
+          }
+        | {
+            title: string;
+            categoryRefs?: (number | Category)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'categories';
+          }
+        | {
+            title: string;
+            subcategoryRefs?: (number | Subcategory)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'subcategories';
+          }
+        | {
+            title: string;
+            brandRefs?: (number | Brand)[] | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'brands';
+          }
+        | {
+            title: string;
+            banners?:
+              | {
+                  bannerImage?: (number | null) | Media;
+                  urlLink: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'banners';
+          }
+      )[]
     | null;
   updatedAt: string;
   createdAt: string;
@@ -597,10 +634,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'customers';
         value: number | Customer;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
       } | null)
     | ({
         relationTo: 'category';
@@ -645,6 +678,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'searchtags';
         value: number | Searchtag;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
       } | null);
   globalSlug?: string | null;
   user:
@@ -783,24 +820,6 @@ export interface CustomersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "category_select".
  */
 export interface CategorySelect<T extends boolean = true> {
@@ -897,6 +916,30 @@ export interface SubcategorySelect<T extends boolean = true> {
         products?: T;
         id?: T;
       };
+  pageContent?:
+    | T
+    | {
+        pageContent?:
+          | T
+          | {
+              contentBlock?:
+                | T
+                | {
+                    content?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              imageBlock?:
+                | T
+                | {
+                    image?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+            };
+        id?: T;
+      };
+  tableContent?: T;
   createdBy?: T;
   modifiedBy?: T;
   slug?: T;
@@ -933,8 +976,14 @@ export interface ProductsSelect<T extends boolean = true> {
   specification?:
     | T
     | {
-        key?: T;
-        value?: T;
+        title?: T;
+        specifications?:
+          | T
+          | {
+              key?: T;
+              value?: T;
+              id?: T;
+            };
         id?: T;
       };
   topDescription?: T;
@@ -1071,42 +1120,56 @@ export interface EnquiriesSelect<T extends boolean = true> {
  * via the `definition` "home_select".
  */
 export interface HomeSelect<T extends boolean = true> {
-  categories?:
+  title?: T;
+  sections?:
     | T
     | {
-        title?: T;
-        data?:
+        products?:
           | T
           | {
-              subcategoryref?: T;
+              title?: T;
+              productRefs?: T;
               id?: T;
+              blockName?: T;
             };
-        id?: T;
-      };
-  banners?:
-    | T
-    | {
-        title?: T;
-        data?:
+        categories?:
           | T
           | {
-              image?: T;
-              urlLink?: T;
+              title?: T;
+              categoryRefs?: T;
               id?: T;
+              blockName?: T;
             };
-        id?: T;
-      };
-  products?:
-    | T
-    | {
-        title?: T;
-        data?:
+        subcategories?:
           | T
           | {
-              productRef?: T;
+              title?: T;
+              subcategoryRefs?: T;
               id?: T;
+              blockName?: T;
             };
-        id?: T;
+        brands?:
+          | T
+          | {
+              title?: T;
+              brandRefs?: T;
+              id?: T;
+              blockName?: T;
+            };
+        banners?:
+          | T
+          | {
+              title?: T;
+              banners?:
+                | T
+                | {
+                    bannerImage?: T;
+                    urlLink?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1138,6 +1201,24 @@ export interface SearchtagsSelect<T extends boolean = true> {
   title?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

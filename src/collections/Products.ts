@@ -104,20 +104,20 @@ export const Products: CollectionConfig = {
       ],
     },
     {
-      type: 'array', // Field type (text for name)
-      name: 'specification', // Field name
-      label: 'Specification', // Label displayed in the admin UI
-      required: false, // Make the field mandatory
+      type: 'array',
+      name: 'specification',
+      label: 'Specification',
+      required: false,
       fields: [
+        { type: 'text', name: 'title', label: 'Title' },
         {
-          type: 'text', // Field type (text for name)
-          name: 'key',
-          label: 'Key',
-        },
-        {
-          type: 'text', // Field type (text for name)
-          name: 'value',
-          label: 'Value',
+          type: 'array',
+          name: 'specifications',
+          label: 'Specifications',
+          fields: [
+            { type: 'text', name: 'key', label: 'Key' },
+            { type: 'text', name: 'value', label: 'Value' },
+          ],
         },
       ],
     },
