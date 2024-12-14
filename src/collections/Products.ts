@@ -122,6 +122,65 @@ export const Products: CollectionConfig = {
       ],
     },
     {
+      name: 'itemDescription',
+      label: 'Item Description',
+      type: 'text',
+      hooks: {
+        beforeChange: [
+          async ({ data, req, operation }) => {
+              // Fetch brand names from the brandsRef relationship
+              // @ts-ignore
+              const brandNames = data.brandsRef
+                ? await Promise.all(
+                   // @ts-ignore
+                    data.brandsRef.map(async (brandId) => {
+                      try {
+                        // Fetch brand by ID
+                        const brand = await req.payload.findByID({
+                          collection: 'brands',
+                          id: brandId,
+                        });
+                         // @ts-ignore
+                        return brand.title; // Extract brand name
+                      } catch (error) {
+                        console.error('Error fetching brand:', error);
+                        return null; // Handle missing or inaccessible brands gracefully
+                      }
+                    })
+                  )
+                : [];
+              
+              // Limit to specifications from the first object in the specification array
+              const specifications =
+               // @ts-ignore
+                data.specification && data.specification[0]
+                 // @ts-ignore
+                  ? data.specification[0].specifications
+                      .map((item) => `${item.value.replace('.','').replace(',','')}`) // Map key-value pairs to strings
+                      .join(', ') // Join specifications into a single string
+                  : '';
+     // @ts-ignore
+              const title = data.title || '';
+    
+              // Generate the itemDescription
+               // @ts-ignore
+              data.itemDescription = [
+                brandNames.filter(Boolean).join(' '), // Join brand names with spaces
+                title,                                // Add the product title
+                specifications                        // Add specifications from the first array
+              ]
+                .filter(Boolean) // Remove empty parts
+                .join(' ');    // Use '|' as a separator for readability
+             // @ts-ignore
+            return data.itemDescription;
+          },
+        ],
+      },
+      index: true, // Make it searchable
+    },
+    
+    
+    {
       type: 'textarea', // Field type (text for name)
       name: 'topDescription', // Field name
       label: 'Top Description', // Label displayed in the admin UI

@@ -389,6 +389,7 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  itemDescription?: string | null;
   topDescription?: string | null;
   bottomDescription?: string | null;
   subcategoryRef?: (number | null) | Subcategory;
@@ -986,6 +987,7 @@ export interface ProductsSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  itemDescription?: T;
   topDescription?: T;
   bottomDescription?: T;
   subcategoryRef?: T;
