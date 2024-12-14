@@ -28,6 +28,7 @@ export const Products: CollectionConfig = {
     brandsRef: true,
     productImages: true,
     specification: true,
+    itemDescription: true,
   },
   fields: [
     {
