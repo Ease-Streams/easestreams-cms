@@ -36,7 +36,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-
+  cors: '*' ,
   collections: [
     Country,
     State,
