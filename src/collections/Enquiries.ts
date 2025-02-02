@@ -1,3 +1,4 @@
+import { setModifiedBy } from '@/utilities/hooks'
 import type { CollectionConfig } from 'payload'
 
 export const Enquiries: CollectionConfig = {
@@ -8,26 +9,9 @@ export const Enquiries: CollectionConfig = {
   fields: [
     {
       type: 'relationship',
-      name: 'customerRef',
-      label: 'Customer',
-      relationTo: 'customers',
-    },
-    {
-      type: 'textarea',
-      name: 'enquiryMessgae',
-      label: 'Message',
-      required: true,
-    },
-    {
-      name: 'enquiryType',
-      type: 'select',
-      options: [
-        { label: 'Job', value: 'job' },
-        { label: 'Promotion', value: 'promotion' },
-        { label: 'Relevant', value: 'relevant' },
-      ],
-      required: true,
-      defaultValue: 'job',
+      name: 'companyRef',
+      label: 'Company',
+      relationTo: 'companies',
     },
     {
       type: 'relationship',
@@ -42,10 +26,21 @@ export const Enquiries: CollectionConfig = {
       },
     },
     {
-      type: 'relationship',
-      name: 'companyRef',
-      label: 'Company',
-      relationTo: 'companies',
+      type: 'textarea',
+      name: 'enquiryMessage',
+      label: 'Message',
+      required: true,
+    },
+    {
+      name: 'enquiryType',
+      type: 'select',
+      options: [
+        { label: 'Job', value: 'job' },
+        { label: 'Promotion', value: 'promotion' },
+        { label: 'Relevant', value: 'relevant' },
+      ],
+      required: true,
+      defaultValue: 'relevant',
     },
     {
       type: 'text',
@@ -62,43 +57,57 @@ export const Enquiries: CollectionConfig = {
       required: true,
     },
     {
-      type: 'upload',
-      relationTo: 'media',
+      type: 'text',
       name: 'enquiryAttachments',
       label: 'Attachments',
-      required: true,
     },
     {
-      type: 'relationship',
       name: 'modifiedBy',
-      label: 'Modified By',
+      type: 'relationship',
       relationTo: 'users',
-      // defaultValue: ({ user }) => user?.id,
-      admin: {
-        allowCreate: false,
+      label: 'Modified By',
+      hooks: {
+        beforeChange: [setModifiedBy],
       },
       access: {
-        update: () => false,
-        read: () => false,
+        read: ({ req: { user } }) => (user ? true : false),
       },
-      hooks: {
-        afterChange: [
-          async ({ operation, req, data }) => {
-            if (operation === 'update') {
-              // Your custom logic here
-              // @ts-ignore
-              data.modifiedBy = req.user?.id
-              return data
-            }
-          },
-        ],
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
       },
+      index: true, // Index modifiedBy for fast retrieval of user who modified the category
     },
     {
       name: 'isDeleted',
       label: 'Delete?',
       type: 'checkbox',
       defaultValue: true,
+    },
+    {
+      type: 'text',
+      name: 'forwardEmail',
+      label: 'Forward Email',
+    },
+    {
+      type: 'ui',
+      name: 'forwardEmailButton',
+      label: 'Forward Email',
+      admin: {
+        // components: {
+        //   Field: () => (
+        //     <button
+        //       type="button"
+        //       onClick={() => {
+        //         // Add your email forwarding logic here
+        //         alert('Email forwarded successfully!');
+        //       }}
+        //     >
+        //       Forward Email
+        //     </button>
+        //   ),
+        // },
+      },
     },
   ],
 }

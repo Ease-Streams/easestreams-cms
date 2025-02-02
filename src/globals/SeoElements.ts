@@ -4,6 +4,9 @@ import type { GlobalConfig } from 'payload'
 export const SeoElements: GlobalConfig = {
   slug: 'seo_elements', // Collection slug (used for API endpoints)
   label: 'Seo Elements',
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       name: 'metaTitle',
