@@ -3,7 +3,7 @@ import seoFields from './fields/seoFields'
 import { normalizeSearchTerm } from '../utilities/helper'
 import { setCreatedBy, setModifiedBy } from '../utilities/hooks'
 
-export const Companies: CollectionConfig = {
+export const Suppliers: CollectionConfig = {
   slug: 'companies', // Collection slug (used for API endpoints)
   access: {
     read: () => true,
@@ -231,4 +231,4 @@ export const Companies: CollectionConfig = {
   ],
 }
 
-export default Companies
+export default Suppliers

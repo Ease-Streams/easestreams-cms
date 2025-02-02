@@ -6,7 +6,7 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   upload: {
-    mimeTypes: ['image/*'],
+    mimeTypes: ['image/*', 'image/gif', 'text/plain', 'video/webm'],
   },
   defaultPopulate: {
     id: true,
